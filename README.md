@@ -40,3 +40,41 @@ Actualmente, las ventas se realizan a través de un catálogo en papel, lo que g
 ✔️ Agilización del proceso de venta y despacho.
 ✔️ Integración con sistemas financieros y de inventario.
 ✔️ Mejora en la experiencia del cliente y la eficiencia operativa.
+
+
+
+# 📌 TodoTech Shop
+
+## 🎯 Objetivo
+Desarrollar un sistema que permita gestionar las ventas de manera eficiente, minimizando errores y mejorando la experiencia del cliente.
+
+## 🛒 Flujo del Proceso de Venta
+1. **El vendedor** inicia una orden, registra los datos del cliente y su clave secreta.
+2. **El vendedor** selecciona los productos desde un catálogo en línea con el inventario.
+3. **El sistema** genera un número de orden para el pago.
+4. **El cajero** cobra el monto correspondiente y valida el pago.
+5. **El cliente** recibe un comprobante y se dirige al área de despacho.
+6. **El despachador** valida la orden, ubica los productos en bodega y entrega el pedido.
+7. **El cliente** ingresa su clave para confirmar la recepción.
+8. **El sistema** actualiza el stock y almacena la orden para la contabilidad.
+
+## 👥 Roles y Funciones
+
+| **Rol**         | **Funciones principales** |
+|----------------|-------------------------|
+| **Cliente**     | Selecciona productos, paga y retira el pedido. |
+| **Vendedor**    | Registra la compra y verifica el stock. |
+| **Cajero**      | Gestiona y valida el pago del cliente. |
+| **Despachador** | Entrega los productos y actualiza el stock. |
+| **Administrador** | Supervisa el sistema, productos y ventas. |
+
+## 🗂️ Integraciones
+- **Inventario**: Control en tiempo real de stock de productos.
+- **Pago con tarjeta**: Validación con **Transbank**.
+- **Pago con cheque**: Validación con **Orsan**.
+- **Finanzas**: Registro de ventas diarias en un proceso batch.
+
+## 🛠️ Tecnologías Utilizadas
+- **Backend**: Spring Boot
+- **Base de Datos**: Oracle
+- **Frontend**: Angular  
