@@ -1,5 +1,6 @@
 package com.example.todotechproject.servicios.VendedorServicios;
 
+import com.example.todotechproject.dto.VendedorDTO;
 import com.example.todotechproject.modelo.entidades.Cliente;
 import com.example.todotechproject.modelo.entidades.OrdenVenta;
 import com.example.todotechproject.modelo.entidades.Producto;
@@ -33,5 +34,11 @@ public interface VendedorServicio {
     void modificarCantidadProducto(String codigo, int nuevaCantidad) throws Exception;
 
 
+    void actualizarVendedor(Vendedor vendedor);
 
+    void eliminarVendedor(Long id);
+
+    Vendedor buscarVendedorPorId(Long id);
+
+    List<VendedorDTO> listarVendedores();
 }

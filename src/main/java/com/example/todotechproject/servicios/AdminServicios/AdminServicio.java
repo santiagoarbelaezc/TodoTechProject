@@ -1,11 +1,9 @@
 package com.example.todotechproject.servicios.AdminServicios;
 
-import com.example.todotechproject.modelo.entidades.OrdenVenta;
-import com.example.todotechproject.modelo.entidades.Producto;
+import com.example.todotechproject.modelo.entidades.*;
 import com.example.todotechproject.modelo.entidades.ReporteUsuarios;
 import com.example.todotechproject.modelo.entidades.Reportes.ReporteStock;
 import com.example.todotechproject.modelo.entidades.Reportes.ReporteVentas;
-import com.example.todotechproject.modelo.entidades.Usuario;
 import com.example.todotechproject.modelo.enums.TipoUsuario;
 
 import java.util.List;
@@ -26,7 +24,9 @@ public interface AdminServicio {
 
     void cambiarEstadoUsuario(Long usuarioId, boolean activo) throws Exception;
 
+    //
 
+    Vendedor crearVendedor (Vendedor vendedor) throws Exception;
     //GESTION DE PRODUCTOS
 
     Producto registrarProducto(String nombre, String codigo, String descripcion) throws Exception;
@@ -70,6 +70,11 @@ public interface AdminServicio {
 
 
     //CONFIGURACION DEL SISTEMA
+
+    void actualizarParametrosSistema(String parametro, String valor) throws Exception; // Ej: cambiar clave de API
+
+    void configurarSeguridad(String tipoSeguridad, String valor) throws Exception; // Configurar roles, accesos
+
 
 
 

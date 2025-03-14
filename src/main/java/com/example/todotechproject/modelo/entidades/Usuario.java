@@ -2,7 +2,17 @@ package com.example.todotechproject.modelo.entidades;
 
 import com.example.todotechproject.modelo.enums.TipoUsuario;
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+
+import jakarta.persistence.Table;
+import lombok.*;
+@Getter
+@Setter
+
+@Entity
+@Table(name = "usuario")
+@Data
 
 public class Usuario {
 

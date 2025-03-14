@@ -20,12 +20,9 @@ public class Vendedor {
     @Column(nullable = false)
     private String telefono;
 
-    @Column(nullable = false, unique = true)
-    private String usuario;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario ", nullable = false)
+    private Usuario usuario;
+;
 
-    @Column(nullable = false)
-    private String contraseña;
-
-    @Column(nullable = false)
-    private String especialidad;
 }
