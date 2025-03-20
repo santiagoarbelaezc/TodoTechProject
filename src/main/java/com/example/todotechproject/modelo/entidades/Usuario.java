@@ -1,26 +1,34 @@
 package com.example.todotechproject.modelo.entidades;
 
-import com.example.todotechproject.modelo.enums.TipoUsuario;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
+import com.example.todotechproject.modelo.enums.TipoUsuario;
+
 @Entity
 @Table(name = "usuario")
 @Data
+@Getter
+@Setter
 public class Usuario {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usuario_seq")
-    @SequenceGenerator(name = "usuario_seq", sequenceName = "usuario_seq", allocationSize = 1)
-    private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String usuario;
+  @Id
+  @Column(name = "id_usuario", nullable = false, unique = true)
+  private String usuario;
 
-    @Column(nullable = false)
-    private String password;
+  @Column(name = "password", nullable = false)
+  private String password;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "tipo_usuario", nullable = false)
-    private TipoUsuario tipoUsuario;
+  //DEPENDIENDO DEL TIPO DE USUARIO, INGRESA A SU INTERFAZ CORRESPONDIENTE
 
+  @Column(name = "tipo", nullable = false)
+  @Enumerated(EnumType.STRING)
+  private TipoUsuario tipoUsuario;
 }
-

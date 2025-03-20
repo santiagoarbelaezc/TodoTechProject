@@ -1,24 +1,24 @@
 -- USUARIOS
-INSERT INTO usuario (id, usuario, password, tipo_usuario)
-VALUES (1, 'vendedor1', '1234', 'VENDEDOR');
+INSERT INTO usuario (id_usuario, password, tipo)
+VALUES ('vendedor1', '1234', 'VENDEDOR');
 
-INSERT INTO usuario (id, usuario, password, tipo_usuario)
-VALUES (2, 'despachador1', '1234', 'DESPACHADOR');
+INSERT INTO usuario (id_usuario, password, tipo)
+VALUES ('despachador1', '1234', 'DESPACHADOR');
 
-INSERT INTO usuario (id, usuario, password, tipo_usuario)
-VALUES (3, 'cajero1', '1234', 'CAJERO');
+INSERT INTO usuario (id_usuario, password, tipo)
+VALUES ('cajero1', '1234', 'CAJERO');
 
 -- VENDEDORES
 INSERT INTO vendedor (id, nombre, correo, telefono, id_usuario)
-VALUES (1, 'Juan Pérez', 'juan@tienda.com', '3001112233', 1);
+VALUES (1, 'Juan Pérez', 'juan@tienda.com', '3001112233', 'vendedor1');
 
 -- DESPACHADORES
 INSERT INTO despachador (id, nombre, correo, telefono, id_usuario)
-VALUES (1, 'Laura Torres', 'laura@tienda.com', '3002223344', 2);
+VALUES (1, 'Laura Torres', 'laura@tienda.com', '3002223344', 'despachador1');
 
 -- CAJEROS
 INSERT INTO cajero (id, nombre, correo, telefono, id_usuario)
-VALUES (1, 'Carlos Rivas', 'carlos@tienda.com', '3003334455', 3);
+VALUES (1, 'Carlos Rivas', 'carlos@tienda.com', '3003334455', 'cajero1');
 
 -- CLIENTES
 INSERT INTO cliente (id, nombre, correo, telefono, clave)

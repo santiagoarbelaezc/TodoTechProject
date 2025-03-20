@@ -78,3 +78,11 @@ Desarrollar un sistema que permita gestionar las ventas de manera eficiente, min
 - **Backend**: Spring Boot
 - **Base de Datos**: Oracle
 - **Frontend**: Angular  
+
+### Deploy Project
+## Required oracle 11 databse
+- Si tienes una base de datos Oracle 18 instalada, puedes usarla. Si no, puedes descargarla desde el sitio oficial de Oracle o puedes descargar docker y ejecutar los siguinetes comandos.
+- ```bash
+  docker pull gvenzl/oracle-xe:18  
+  
+  docker run -d --name oracle-xe -p 1521:1521 -e ORACLE_PASSWORD=0000 -e APP_USER=techAdmin -e APP_PASSWORD=0000 gvenzl/oracle-xe:18

@@ -1,11 +1,15 @@
 package com.example.todotechproject.servicios.VendedorServicios;
 
-import com.example.todotechproject.dto.VendedorDTO;
-import com.example.todotechproject.modelo.entidades.*;
-import com.example.todotechproject.modelo.enums.EstadoOrden;
-
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.example.todotechproject.modelo.dto.VendedorDTO;
+import com.example.todotechproject.modelo.entidades.Categoria;
+import com.example.todotechproject.modelo.entidades.Cliente;
+import com.example.todotechproject.modelo.entidades.OrdenVenta;
+import com.example.todotechproject.modelo.entidades.Producto;
+import com.example.todotechproject.modelo.entidades.Vendedor;
+import com.example.todotechproject.modelo.enums.EstadoOrden;
 
 public interface VendedorServicio {
 
@@ -13,9 +17,8 @@ public interface VendedorServicio {
     //SERVICIOS DEL EMPLEADO
     //SPRINT 1
 
-    OrdenVenta crearOrdenVenta(LocalDateTime fecha, Cliente cliente, Vendedor vendedor) throws Exception;
-
-    Vendedor buscarVendedorPorUsuario(Usuario usuario);
+  OrdenVenta crearOrdenVenta(LocalDateTime fecha, Cliente cliente, Vendedor vendedor, List<Producto> productoList
+      , EstadoOrden estadoOrden, double total) throws Exception;
 
     void cancelarOrdenVenta(Long ordenId) throws Exception;
 
@@ -23,18 +26,19 @@ public interface VendedorServicio {
 
     void eliminarProducto(Producto producto) throws Exception;
 
-    void buscarProducto(String codigo) throws Exception;
+  List<Producto> buscarProductoPorCodigo(String codigo) throws Exception;
 
-    void buscarProductoNombre(String nombre)throws Exception;
+  List<Producto> buscarProductoPorNombre(String nombre) throws Exception;
 
-    int consultarDisponibilidad (String codigo) throws Exception;
+  List<Producto> buscarProductorPorCategoria(Categoria categoria) throws Exception;
 
-    void ingresarDescuento (String codigo, double descuento) throws Exception;
+  int consultarDisponibilidad(String codigo) throws Exception;
+
+  void ingresarDescuento(String codigo, double descuento) throws Exception;
 
     void modificarCantidadProducto(String codigo, int nuevaCantidad) throws Exception;
 
-
-    void actualizarVendedor(Vendedor vendedor);
+  void actualizarVendedor(Vendedor vendedor);
 
     void eliminarVendedor(Long id);
 

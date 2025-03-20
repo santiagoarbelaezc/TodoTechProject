@@ -1,6 +1,6 @@
 package com.example.todotechproject.servicios.UsuarioServicios;
 
-import com.example.todotechproject.dto.UsuarioDTO.UsuarioDTO;
+import com.example.todotechproject.modelo.dto.UsuarioDTO.UsuarioDTO;
 import com.example.todotechproject.modelo.entidades.Usuario;
 import com.example.todotechproject.modelo.enums.TipoUsuario;
 

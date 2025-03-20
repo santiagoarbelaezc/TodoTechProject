@@ -1,8 +1,6 @@
 package com.example.todotechproject.controlador;
 
 import com.example.todotechproject.dto.UsuarioDTO.UsuarioDTO;
-import org.springframework.http.HttpStatus;
-
 import com.example.todotechproject.modelo.entidades.Usuario;
 import com.example.todotechproject.modelo.enums.TipoUsuario;
 import com.example.todotechproject.servicios.UsuarioServicios.UsuarioServicio;
