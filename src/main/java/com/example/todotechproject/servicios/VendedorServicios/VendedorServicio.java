@@ -1,10 +1,7 @@
 package com.example.todotechproject.servicios.VendedorServicios;
 
 import com.example.todotechproject.dto.VendedorDTO;
-import com.example.todotechproject.modelo.entidades.Cliente;
-import com.example.todotechproject.modelo.entidades.OrdenVenta;
-import com.example.todotechproject.modelo.entidades.Producto;
-import com.example.todotechproject.modelo.entidades.Vendedor;
+import com.example.todotechproject.modelo.entidades.*;
 import com.example.todotechproject.modelo.enums.EstadoOrden;
 
 import java.time.LocalDateTime;
@@ -25,7 +22,11 @@ public interface VendedorServicio {
 
     void eliminarProducto(Producto producto) throws Exception;
 
-    void buscarProducto(String codigo) throws Exception;
+    List<Producto> buscarProductoPorCodigo(String codigo) throws Exception;
+
+    List<Producto> buscarProductoPorNombre(String nombre) throws Exception;
+
+    List<Producto> buscarProductorPorCategoria(Categoria categoria) throws Exception;
 
     int consultarDisponibilidad (String codigo) throws Exception;
 
