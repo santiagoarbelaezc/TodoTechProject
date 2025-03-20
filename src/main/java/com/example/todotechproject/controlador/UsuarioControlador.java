@@ -1,67 +1,70 @@
 package com.example.todotechproject.controlador;
 
-import com.example.todotechproject.dto.UsuarioDTO.UsuarioDTO;
+
+import com.example.todotechproject.modelo.dto.UsuarioDTO.UsuarioDTO;
 import com.example.todotechproject.modelo.entidades.Usuario;
 import com.example.todotechproject.modelo.enums.TipoUsuario;
+
 import com.example.todotechproject.servicios.UsuarioServicios.UsuarioServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
-
 
 @RestController
-@RequestMapping("/api/usuarios")
+@RequestMapping("/usuarios")
 public class UsuarioControlador {
 
     @Autowired
-    private UsuarioServicio usuarioServicio;
+    private UsuarioServicio usuarioService;
 
-    @GetMapping
-    public List<Usuario> obtenerUsuarios() throws Exception {
-        return usuarioServicio.listarUsuarios();
+    // Crear usuario
+    @PostMapping("/crear")
+    public ResponseEntity<String> crearUsuario(@RequestBody UsuarioDTO usuarioDTO) throws Exception {
+        Usuario usuario = new Usuario();
+        usuario.setUsuario(usuarioDTO.usuario());
+        usuario.setPassword(usuarioDTO.password());
+        usuario.setTipoUsuario(usuarioDTO.tipoUsuario());
+
+        usuarioService.crearUsuario(usuario);
+        return ResponseEntity.ok("Usuario creado correctamente");
     }
 
-    @GetMapping("/{usuario}")
-    public ResponseEntity<UsuarioDTO> obtenerUsuario(@PathVariable String usuario) {
-        Optional<Usuario> optionalUsuario = Optional.ofNullable(usuarioServicio.buscarPorUsuario(usuario));
-        if (optionalUsuario.isPresent()) {
-            Usuario entidad = optionalUsuario.get();
-            UsuarioDTO dto = new UsuarioDTO(
-                    entidad.getUsuario(),
-                    entidad.getPassword(),
-                    entidad.getTipoUsuario()
-            );
-            return ResponseEntity.ok(dto);
-        } else {
+    // Actualizar usuario
+    @PutMapping("/actualizar")
+    public ResponseEntity<String> actualizarUsuario(@RequestBody UsuarioDTO usuarioDTO) throws Exception {
+        Usuario usuario = new Usuario();
+        usuario.setUsuario(usuarioDTO.usuario());
+        usuario.setPassword(usuarioDTO.password());
+        usuario.setTipoUsuario(usuarioDTO.tipoUsuario());
+
+        usuarioService.actualizarUsuario(usuario);
+        return ResponseEntity.ok("Usuario actualizado correctamente");
+    }
+
+    // Eliminar usuario
+    @DeleteMapping("/eliminar/{usuario}")
+    public ResponseEntity<String> eliminarUsuario(@PathVariable String usuario) {
+        usuarioService.eliminarUsuario(usuario);
+        return ResponseEntity.ok("Usuario eliminado correctamente");
+    }
+
+    // Buscar usuario por nombre de usuario
+    @GetMapping("/buscar/{usuario}")
+    public ResponseEntity<UsuarioDTO> buscarUsuario(@PathVariable String usuario) {
+        Usuario encontrado = usuarioService.buscarUsuarioPorId(usuario);
+        if (encontrado == null) {
             return ResponseEntity.notFound().build();
         }
+        UsuarioDTO usuarioDTO = new UsuarioDTO(encontrado.getUsuario(), encontrado.getPassword(), encontrado.getTipoUsuario());
+        return ResponseEntity.ok(usuarioDTO);
     }
 
-
-
-    @PostMapping("/crear")
-    public String crearUsuario(@RequestBody Usuario usuario) throws Exception {
-        usuarioServicio.crearUsuario(usuario);
-        return "Usuario " + usuario.getUsuario() + " creado correctamente.";
-    }
-
-    @PutMapping("/actualizar")
-    public String actualizarUsuario(@RequestBody Usuario usuario) throws Exception {
-        usuarioServicio.actualizarUsuario(usuario);
-        return "Usuario " + usuario.getUsuario() + " actualizado correctamente.";
-    }
-
-    @DeleteMapping("/eliminar/{usuario}")
-    public String eliminarUsuario(@PathVariable String usuario) {
-        usuarioServicio.eliminarUsuario(usuario);
-        return "Usuario " + usuario + " eliminado correctamente.";
-    }
-
-    @GetMapping("/tipo/{tipoUsuario}")
-    public List<UsuarioDTO> obtenerUsuariosPorTipo(@PathVariable TipoUsuario tipoUsuario) {
-        return usuarioServicio.buscarUsuariosPorTipo(tipoUsuario);
+    // Buscar usuarios por tipo de usuario
+    @GetMapping("/buscarPorTipo/{tipoUsuario}")
+    public ResponseEntity<List<UsuarioDTO>> buscarUsuariosPorTipo(@PathVariable TipoUsuario tipoUsuario) {
+        List<UsuarioDTO> usuarios = usuarioService.buscarUsuariosPorTipo(tipoUsuario);
+        return ResponseEntity.ok(usuarios);
     }
 }

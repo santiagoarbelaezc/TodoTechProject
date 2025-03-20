@@ -19,14 +19,14 @@ public class OrdenVenta {
     private Date fecha;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cliente_id", nullable = false)
+    @JoinColumn(name = "cliente_id", referencedColumnName = "id", nullable = false)
     private Cliente cliente;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vendedor_id", nullable = false)
+    @JoinColumn(name = "vendedor_id", referencedColumnName = "id", nullable = false)
     private Vendedor vendedor;
 
-    @OneToMany(mappedBy = "ordenVenta", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "id", cascade = CascadeType.REFRESH)
     private List<DetalleOrden> productos;
 
     @Enumerated(EnumType.STRING)

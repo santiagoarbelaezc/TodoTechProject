@@ -12,7 +12,7 @@ public class DetalleOrden {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "producto_id", nullable = false)
+    @JoinColumn(name = "producto_id", referencedColumnName = "id", nullable = false)
     private Producto producto;
 
     @Column(nullable = false)
@@ -22,7 +22,7 @@ public class DetalleOrden {
     private Double subtotal;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "orden_venta_id")
+    @JoinColumn(name = "orden_venta_id", referencedColumnName = "id", nullable = false)
     private OrdenVenta ordenVenta;
 }
 

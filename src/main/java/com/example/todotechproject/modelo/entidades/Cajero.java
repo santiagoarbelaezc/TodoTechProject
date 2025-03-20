@@ -21,6 +21,6 @@ public class Cajero {
     private String telefono;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_usuario", referencedColumnName = "id", nullable = false, unique = true)
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario", nullable = false, unique = true)
     private Usuario usuario;
 }
