@@ -5,7 +5,6 @@ import com.example.todotechproject.modelo.entidades.*;
 import com.example.todotechproject.modelo.enums.EstadoOrden;
 import com.example.todotechproject.repositorios.DetalleOrdenRepo;
 import com.example.todotechproject.repositorios.OrdenVentaRepo;
-import com.example.todotechproject.repositorios.ProductoRepo;
 import com.example.todotechproject.repositorios.VendedorRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,9 +27,6 @@ public class VendedorServicioImp implements VendedorServicio{
 
     @Autowired
     private DetalleOrdenRepo detalleOrdenRepo;
-
-    @Autowired
-    private ProductoRepo productoRepo;
 
     @Override
     public OrdenVenta crearOrdenVenta(LocalDateTime fecha, Cliente cliente, Vendedor vendedor, List<Producto> productoList, EstadoOrden estadoOrden, double total) throws Exception {
@@ -56,6 +52,7 @@ public class VendedorServicioImp implements VendedorServicio{
         return ordenVenta;
     }
 
+
     @Override
     public void cancelarOrdenVenta(Long ordenId) throws Exception {
         // Lógica para cancelar una orden (se debería interactuar con un repositorio de OrdenVenta)
@@ -72,17 +69,8 @@ public class VendedorServicioImp implements VendedorServicio{
     }
 
     @Override
-    public List<Producto> buscarProductoPorCodigo(String codigo) throws Exception {
-        return null;
-    }
-
-    public List<Producto> buscarProductoPorNombre(String nombre) throws Exception {
-        return null;
-    }
-
-    @Override
-    public List<Producto> buscarProductorPorCategoria(Categoria categoria) throws Exception {
-        return null;
+    public void buscarProducto(String codigo) throws Exception {
+        // Lógica para buscar un producto por código en el inventario
     }
 
     @Override
