@@ -15,7 +15,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-
 public class VendedorServicioImp implements VendedorServicio{
 
 
@@ -69,6 +68,20 @@ public class VendedorServicioImp implements VendedorServicio{
     }
 
     @Override
+    public List<Producto> buscarProductoPorCodigo(String codigo) throws Exception {
+        return List.of();
+    }
+
+    @Override
+    public List<Producto> buscarProductoPorNombre(String nombre) throws Exception {
+        return List.of();
+    }
+
+    @Override
+    public List<Producto> buscarProductorPorCategoria(Categoria categoria) throws Exception {
+        return List.of();
+    }
+
     public void buscarProducto(String codigo) throws Exception {
         // Lógica para buscar un producto por código en el inventario
     }

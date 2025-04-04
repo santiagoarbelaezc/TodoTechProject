@@ -27,7 +27,7 @@ public class OrdenVenta {
     @JoinColumn(name = "vendedor_id", nullable = false)
     private Vendedor vendedor;
 
-    @OneToMany(mappedBy = "ordenVenta", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
     private List<DetalleOrden> productos;
 
     @Enumerated(EnumType.STRING)

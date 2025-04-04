@@ -1,0 +1,13 @@
+spring:
+  application:
+  name: TodoTechProject
+  # OracleDB connection settings
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521/todo-tech
+    username: system
+    password: 1234
+    driver-class-name: oracle.jdbc.OracleDriver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.OracleDialect
