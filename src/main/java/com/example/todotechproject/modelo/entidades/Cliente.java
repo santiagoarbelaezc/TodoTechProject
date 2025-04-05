@@ -2,15 +2,13 @@ package com.example.todotechproject.modelo.entidades;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import java.util.List;
-import java.util.Date;
-
 @Entity
 @Table(name = "cliente")
 @Data
 public class Cliente {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cliente_seq")
+    @SequenceGenerator(name = "cliente_seq", sequenceName = "cliente_seq", allocationSize = 1)
     private Long id;
 
     @Column(nullable = false)
@@ -23,5 +21,5 @@ public class Cliente {
     private String telefono;
 
     @Column(nullable = false)
-    private String claveSecreta;
+    private String clave;
 }

@@ -4,7 +4,6 @@ import com.example.todotechproject.modelo.enums.MedioPago;
 import jakarta.persistence.*;
 import lombok.Data;
 
-
 @Entity
 @Table(name = "pago")
 @Data
@@ -18,7 +17,7 @@ public class Pago {
     @JoinColumn(name = "orden_id", nullable = false)
     private OrdenVenta orden;
 
-    @Column(name = "monto", nullable = false)
+    @Column(nullable = false)
     private Double monto;
 
     @Enumerated(EnumType.STRING)

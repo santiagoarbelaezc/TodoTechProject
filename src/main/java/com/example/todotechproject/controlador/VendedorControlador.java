@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/vendedores")
 public class VendedorControlador {
-
+/*
     @Autowired
     private VendedorServicio vendedorService;
 
@@ -67,4 +67,7 @@ public class VendedorControlador {
     public List<VendedorDTO> listarVendedores() {
         return vendedorService.listarVendedores();
     }
+
+*/
+
 }

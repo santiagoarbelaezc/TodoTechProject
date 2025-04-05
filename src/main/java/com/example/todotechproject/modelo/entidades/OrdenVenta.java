@@ -6,7 +6,6 @@ import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
-
 @Entity
 @Table(name = "orden_venta")
 @Data
@@ -16,7 +15,7 @@ public class OrdenVenta {
     @SequenceGenerator(name = "orden_venta_seq", sequenceName = "orden_venta_seq", allocationSize = 1)
     private Long id;
 
-    @Column(name = "fecha", nullable = false)
+    @Column(nullable = false)
     private Date fecha;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,9 +30,10 @@ public class OrdenVenta {
     private List<DetalleOrden> productos;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "estado", nullable = false)
+    @Column(nullable = false)
     private EstadoOrden estado;
 
-    @Column(name = "total", nullable = false)
+    @Column(nullable = false)
     private Double total;
 }
+

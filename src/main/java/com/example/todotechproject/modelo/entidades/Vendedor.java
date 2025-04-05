@@ -2,7 +2,6 @@ package com.example.todotechproject.modelo.entidades;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
 @Entity
 @Table(name = "vendedor")
 @Data
@@ -20,9 +19,7 @@ public class Vendedor {
     @Column(nullable = false)
     private String telefono;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario ", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id", nullable = false, unique = true)
     private Usuario usuario;
-;
-
 }

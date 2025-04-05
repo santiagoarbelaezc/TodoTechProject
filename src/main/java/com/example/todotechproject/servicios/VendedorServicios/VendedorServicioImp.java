@@ -28,6 +28,8 @@ public class VendedorServicioImp implements VendedorServicio{
     @Autowired
     private DetalleOrdenRepo detalleOrdenRepo;
 
+
+
     @Override
     public OrdenVenta crearOrdenVenta(LocalDateTime fecha, Cliente cliente, Vendedor vendedor, List<Producto> productoList, EstadoOrden estadoOrden, double total) throws Exception {
         OrdenVenta ordenVenta = new OrdenVenta();
@@ -71,6 +73,11 @@ public class VendedorServicioImp implements VendedorServicio{
     @Override
     public void buscarProducto(String codigo) throws Exception {
         // Lógica para buscar un producto por código en el inventario
+    }
+
+    @Override
+    public void buscarProductoNombre(String nombre) throws Exception {
+
     }
 
     @Override
