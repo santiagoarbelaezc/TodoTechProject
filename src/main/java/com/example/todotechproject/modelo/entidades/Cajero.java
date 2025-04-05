@@ -2,13 +2,13 @@ package com.example.todotechproject.modelo.entidades;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
 @Entity
 @Table(name = "cajero")
 @Data
 public class Cajero {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cajero_seq")
+    @SequenceGenerator(name = "cajero_seq", sequenceName = "cajero_seq", allocationSize = 1)
     private Long id;
 
     @Column(nullable = false)
@@ -20,9 +20,7 @@ public class Cajero {
     @Column(nullable = false)
     private String telefono;
 
-    @Column(nullable = false, unique = true)
-    private String usuario;
-
-    @Column(nullable = false)
-    private String contraseña;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id", nullable = false, unique = true)
+    private Usuario usuario;
 }

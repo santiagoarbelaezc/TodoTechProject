@@ -2,7 +2,6 @@ package com.example.todotechproject.modelo.entidades;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
 @Entity
 @Table(name = "detalle_orden")
 @Data
@@ -16,10 +15,15 @@ public class DetalleOrden {
     @JoinColumn(name = "producto_id", nullable = false)
     private Producto producto;
 
-    @Column(name = "cantidad", nullable = false)
+    @Column(nullable = false)
     private Integer cantidad;
 
-    @Column(name = "subtotal", nullable = false)
+    @Column(nullable = false)
     private Double subtotal;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "orden_venta_id")
+    private OrdenVenta ordenVenta;
 }
+
 

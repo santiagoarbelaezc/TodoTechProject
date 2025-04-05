@@ -12,6 +12,8 @@ public interface UsuarioServicio {
 
     void actualizarUsuario(Usuario usuario) throws Exception;
 
+    Usuario buscarPorUsuario(String usuario);
+
     void eliminarUsuario(Usuario usuario) throws Exception;
 
     void buscarUsuario(Usuario usuario) throws Exception;
