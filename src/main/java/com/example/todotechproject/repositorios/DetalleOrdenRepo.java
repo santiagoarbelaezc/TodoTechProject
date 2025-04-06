@@ -10,11 +10,11 @@ import java.util.Optional;
 @Repository
 public interface DetalleOrdenRepo extends JpaRepository<DetalleOrden, Long> {
 
-    List<DetalleOrden> findByIdProducto(Long productoId);
+    List<DetalleOrden> findByProducto_Id(Long productoId);
 
-    List<DetalleOrden> findByIdOrdenVenta(Long ordenVentaId);
+    List<DetalleOrden> findByOrdenVenta_Id(Long ordenVentaId);
 
-    Optional<DetalleOrden> findByOrdenVentaIdAndProductoId(Long ordenVentaId, Long productoId);
-
+    Optional<DetalleOrden> findByOrdenVenta_IdAndProducto_Id(Long ordenVentaId, Long productoId);
 
 }
+
