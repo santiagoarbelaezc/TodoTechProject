@@ -1,6 +1,8 @@
 package com.example.todotechproject.controlador;
 
 import com.example.todotechproject.dto.UsuarioDTO.UsuarioDTO;
+import org.springframework.http.HttpStatus;
+
 import com.example.todotechproject.modelo.entidades.Usuario;
 import com.example.todotechproject.modelo.enums.TipoUsuario;
 import com.example.todotechproject.servicios.UsuarioServicios.UsuarioServicio;
@@ -24,19 +26,35 @@ public class UsuarioControlador {
         return usuarioServicio.listarUsuarios();
     }
 
-    @GetMapping("/{usuario}")
-    public ResponseEntity<UsuarioDTO> obtenerUsuario(@PathVariable String usuario) {
-        Optional<Usuario> optionalUsuario = Optional.ofNullable(usuarioServicio.buscarPorUsuario(usuario));
-        if (optionalUsuario.isPresent()) {
-            Usuario entidad = optionalUsuario.get();
+    @GetMapping("/{usuario}/{password}")
+    public ResponseEntity<Boolean> validarCredenciales(@PathVariable String usuario, @PathVariable String password) {
+        Usuario entidad = usuarioServicio.buscarPorUsuario(usuario);
+
+        if (entidad != null && entidad.getPassword().equals(password)) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.ok(false);
+        }
+    }
+
+    // ✅ 2. Login que retorna el UsuarioDTO completo si las credenciales son correctas
+    @GetMapping("/login/{usuario}/{password}")
+    public ResponseEntity<UsuarioDTO> login(
+            @PathVariable String usuario,
+            @PathVariable String password) {
+
+        Usuario entidad = usuarioServicio.buscarPorUsuario(usuario);
+
+        if (entidad != null && entidad.getPassword().equals(password)) {
             UsuarioDTO dto = new UsuarioDTO(
                     entidad.getUsuario(),
                     entidad.getPassword(),
                     entidad.getTipoUsuario()
+                    // Agrega más campos al DTO si necesitas
             );
             return ResponseEntity.ok(dto);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 

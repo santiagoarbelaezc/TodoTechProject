@@ -1,10 +1,7 @@
 package com.example.todotechproject.servicios.VendedorServicios;
 
 import com.example.todotechproject.dto.VendedorDTO;
-import com.example.todotechproject.modelo.entidades.Cliente;
-import com.example.todotechproject.modelo.entidades.OrdenVenta;
-import com.example.todotechproject.modelo.entidades.Producto;
-import com.example.todotechproject.modelo.entidades.Vendedor;
+import com.example.todotechproject.modelo.entidades.*;
 import com.example.todotechproject.modelo.enums.EstadoOrden;
 
 import java.time.LocalDateTime;
@@ -16,8 +13,9 @@ public interface VendedorServicio {
     //SERVICIOS DEL EMPLEADO
     //SPRINT 1
 
-    OrdenVenta crearOrdenVenta (LocalDateTime fecha, Cliente cliente, Vendedor vendedor, List<Producto> productoList
-            , EstadoOrden estadoOrden, double total) throws Exception;
+    OrdenVenta crearOrdenVenta(LocalDateTime fecha, Cliente cliente, Vendedor vendedor) throws Exception;
+
+    Vendedor buscarVendedorPorUsuario(Usuario usuario);
 
     void cancelarOrdenVenta(Long ordenId) throws Exception;
 

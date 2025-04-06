@@ -3,6 +3,7 @@ package com.example.todotechproject.servicios.VendedorServicios;
 import com.example.todotechproject.dto.VendedorDTO;
 import com.example.todotechproject.modelo.entidades.*;
 import com.example.todotechproject.modelo.enums.EstadoOrden;
+import com.example.todotechproject.repositorios.ClienteRepo;
 import com.example.todotechproject.repositorios.DetalleOrdenRepo;
 import com.example.todotechproject.repositorios.OrdenVentaRepo;
 import com.example.todotechproject.repositorios.VendedorRepo;
@@ -28,30 +29,29 @@ public class VendedorServicioImp implements VendedorServicio{
     @Autowired
     private DetalleOrdenRepo detalleOrdenRepo;
 
+    @Autowired
+    private ClienteRepo clienteRepo;
+
 
 
     @Override
-    public OrdenVenta crearOrdenVenta(LocalDateTime fecha, Cliente cliente, Vendedor vendedor, List<Producto> productoList, EstadoOrden estadoOrden, double total) throws Exception {
+    public OrdenVenta crearOrdenVenta(LocalDateTime fecha, Cliente cliente, Vendedor vendedor) throws Exception {
+        Cliente clienteGuardado = clienteRepo.save(cliente);
         OrdenVenta ordenVenta = new OrdenVenta();
-        ordenVenta.setFecha(java.sql.Timestamp.valueOf(fecha)); // Convertir LocalDateTime a Date
-        ordenVenta.setCliente(cliente);
+        ordenVenta.setFecha(java.sql.Timestamp.valueOf(fecha));
+        ordenVenta.setCliente(clienteGuardado);
         ordenVenta.setVendedor(vendedor);
-        ordenVenta.setEstado(estadoOrden);
-        ordenVenta.setTotal(total);
+        ordenVenta.setEstado(EstadoOrden.PENDIENTE); // Estado por defecto
+        ordenVenta.setTotal(0.0); // Total vacío por defecto
+        ordenVenta.setProductos(List.of()); // Lista vacía de productos
 
-        // Guardar la orden primero para generar su ID
-        ordenVenta = ordenVentaRepo.save(ordenVenta);
+        return ordenVentaRepo.save(ordenVenta);
+    }
 
-        // Crear y guardar los detalles de la orden
-        for (Producto producto : productoList) {
-            DetalleOrden detalle = new DetalleOrden();
-            detalle.setProducto(producto);
-            detalle.setCantidad(1); // Ajusta según la lógica
-            detalle.setSubtotal(producto.getPrecio()); // Ajusta si hay descuentos
-            detalleOrdenRepo.save(detalle); // Guardar cada detalle en la BD
-        }
-
-        return ordenVenta;
+    @Override
+    public Vendedor buscarVendedorPorUsuario(Usuario usuario) {
+        return vendedorRepo.findByUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Vendedor no encontrado para el usuario: " + usuario.getUsuario()));
     }
 
 
