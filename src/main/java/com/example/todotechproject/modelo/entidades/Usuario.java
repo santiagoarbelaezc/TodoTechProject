@@ -22,5 +22,6 @@ public class Usuario {
     @Column(name = "tipo_usuario", nullable = false)
     private TipoUsuario tipoUsuario;
 
+
 }
 

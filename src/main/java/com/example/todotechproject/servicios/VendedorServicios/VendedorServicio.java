@@ -28,6 +28,8 @@ public interface VendedorServicio {
 
     List<Producto> buscarProductorPorCategoria(Categoria categoria) throws Exception;
 
+    void buscarProducto(String codigo) throws Exception;
+
     void buscarProductoNombre(String nombre)throws Exception;
 
     int consultarDisponibilidad (String codigo) throws Exception;
