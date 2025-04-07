@@ -15,8 +15,19 @@ public class ProductoControlador {
     @Autowired
     private ProductoServicio productoServicio;
 
-    @GetMapping
-    public List<ProductoDTO> obtenerProductos() {
-        return productoServicio.obtenerTodos();
+    @GetMapping("/id/{id}")
+    public ProductoDTO obtenerProductoPorId(@PathVariable Long id) {
+        return productoServicio.buscarPorId(id);
     }
+
+    @GetMapping("/nombre/{nombre}")
+    public List<ProductoDTO> buscarPorNombre(@PathVariable String nombre) {
+        return productoServicio.buscarPorNombre(nombre);
+    }
+
+    @GetMapping("/categoria/{categoria}")
+    public List<ProductoDTO> buscarPorCategoria(@PathVariable String categoria) {
+        return productoServicio.buscarPorCategoria(categoria);
+    }
+
 }
