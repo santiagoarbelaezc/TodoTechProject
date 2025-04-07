@@ -28,6 +28,7 @@ public class ProductoServicioImp implements ProductoServicio {
             dto.setCategoria(prod.getCategoria().getNombre());
             dto.setPrecio(prod.getPrecio());
             dto.setStock(prod.getStock());
+            dto.setImagen(prod.getImagen());
             return dto;
         }).collect(Collectors.toList());
     }

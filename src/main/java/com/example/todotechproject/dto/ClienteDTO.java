@@ -1,4 +1,9 @@
 package com.example.todotechproject.dto;
 
-public class ClienteDTO {
-}
+
+public record ClienteDTO(
+        Long id,
+        String nombre,
+        String correo,
+        String telefono
+) {}

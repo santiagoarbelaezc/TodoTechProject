@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class Producto {
 
-    //Identificador en tablas
+    // Identificador en tablas
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "producto_seq")
     @SequenceGenerator(name = "producto_seq", sequenceName = "producto_seq", allocationSize = 1)
@@ -17,8 +17,7 @@ public class Producto {
     @Column(name = "nombre", nullable = false)
     private String nombre;
 
-    //Identificador en TODOTECH
-
+    // Identificador en TODOTECH
     @Column(name = "codigo", nullable = false)
     private String codigo;
 
@@ -32,7 +31,10 @@ public class Producto {
     @Column(name = "precio", nullable = false)
     private Double precio;
 
-
     @Column(name = "stock", nullable = false)
     private Integer stock;
+
+    // Nueva columna para almacenar el nombre del archivo de imagen
+    @Column(name = "imagen")
+    private String imagen;
 }

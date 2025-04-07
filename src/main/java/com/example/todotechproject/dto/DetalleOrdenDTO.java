@@ -1,4 +1,9 @@
 package com.example.todotechproject.dto;
 
-public class DetalleOrdenDTO {
-}
+public record DetalleOrdenDTO(
+        Long id,
+        Long productoId,
+        Integer cantidad,
+        Double subtotal,
+        Long OrdenVenta
+) {}
