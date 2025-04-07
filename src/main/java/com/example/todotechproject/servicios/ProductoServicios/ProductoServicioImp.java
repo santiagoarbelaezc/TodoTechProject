@@ -3,6 +3,7 @@ package com.example.todotechproject.servicios.ProductoServicios;
 import com.example.todotechproject.dto.ProductoDTO;
 import com.example.todotechproject.modelo.entidades.Producto;
 import com.example.todotechproject.repositorios.ProductoRepo;
+import com.example.todotechproject.utils.Mappers.ProductoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,4 +33,27 @@ public class ProductoServicioImp implements ProductoServicio {
             return dto;
         }).collect(Collectors.toList());
     }
+
+    @Override
+    public ProductoDTO buscarPorId(Long id) {
+        return productoRepo.findById(id)
+                .map(ProductoMapper::toDTO)
+                .orElse(null);
+    }
+
+    @Override
+    public List<ProductoDTO> buscarPorNombre(String nombre) {
+        return productoRepo.findByNombreContaining(nombre).stream()
+                .map(ProductoMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductoDTO> buscarPorCategoria(String categoria) {
+        return productoRepo.findByCategoriaNombre(categoria).stream()
+                .map(ProductoMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+
 }

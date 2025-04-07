@@ -6,4 +6,12 @@ import java.util.List;
 
 public interface ProductoServicio {
     List<ProductoDTO> obtenerTodos();
+
+
+
+    ProductoDTO buscarPorId(Long id);
+
+    List<ProductoDTO> buscarPorNombre(String nombre);
+
+    List<ProductoDTO> buscarPorCategoria(String categoria);
 }

@@ -25,7 +25,9 @@ public interface VendedorServicio {
 
     void buscarProducto(String codigo) throws Exception;
 
-    void buscarProductoNombre(String nombre)throws Exception;
+    List<Producto> buscarProductoNombre(String nombre)throws Exception;
+    List<Producto> buscarProductoId(String id)throws Exception;
+    List<Producto> buscarProductoCategoria(Categoria categoria)throws Exception;
 
     int consultarDisponibilidad (String codigo) throws Exception;
 
