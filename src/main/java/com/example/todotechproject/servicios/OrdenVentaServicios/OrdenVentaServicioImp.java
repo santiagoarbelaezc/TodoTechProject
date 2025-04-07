@@ -10,6 +10,7 @@ import com.example.todotechproject.repositorios.ClienteRepo;
 import com.example.todotechproject.repositorios.OrdenVentaRepo;
 import com.example.todotechproject.servicios.UsuarioServicios.UsuarioServicio;
 import com.example.todotechproject.servicios.VendedorServicios.VendedorServicio;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -19,45 +20,31 @@ import java.util.List;
 @Service
 public class OrdenVentaServicioImp implements OrdenVentaServicio {
 
-    private final UsuarioServicio usuarioServicio;
-    private final VendedorServicio vendedorServicio;
-    private final ClienteRepo clienteRepo;
-    private final OrdenVentaRepo ordenVentaRepo;
+    @Autowired
+    private UsuarioServicio usuarioServicio;
 
-    public OrdenVentaServicioImp(UsuarioServicio usuarioServicio,
-                                 VendedorServicio vendedorServicio,
-                                 ClienteRepo clienteRepo,
-                                 OrdenVentaRepo ordenVentaRepo) {
-        this.usuarioServicio = usuarioServicio;
-        this.vendedorServicio = vendedorServicio;
-        this.clienteRepo = clienteRepo;
-        this.ordenVentaRepo = ordenVentaRepo;
-    }
+    @Autowired
+    private VendedorServicio vendedorServicio;
+
 
     @Override
     public boolean crearOrdenVentaDesdeDTO(CrearOrdenDTO request) {
-        try {
-            Usuario usuario = usuarioServicio.buscarPorUsuario(request.vendedor());
-            if (usuario == null) return false;
+        return false;
+    }
 
-            Vendedor vendedor = vendedorServicio.buscarVendedorPorUsuario(usuario);
-            if (vendedor == null) return false;
-
-            Cliente clienteGuardado = clienteRepo.save(request.cliente());
-
-            OrdenVenta orden = new OrdenVenta();
-            orden.setFecha(Timestamp.valueOf(LocalDateTime.now()));
-            orden.setCliente(clienteGuardado);
-            orden.setVendedor(vendedor);
-            orden.setEstado(EstadoOrden.PENDIENTE);
-            orden.setTotal(0.0);
-            orden.setProductos(List.of());
-
-            ordenVentaRepo.save(orden);
-            return true;
-
-        } catch (Exception e) {
-            return false;
+    @Override
+    public OrdenVenta crearOrdenVenta(CrearOrdenDTO request) throws Exception {
+        Usuario usuario = usuarioServicio.buscarPorUsuario(request.vendedor());
+        if (usuario == null) {
+            throw new com.example.todotechproject.excepciones.UsuarioNoEncontradoException("El usuario no existe");
         }
+
+        Vendedor vendedor = vendedorServicio.buscarVendedorPorUsuario(usuario);
+
+        return vendedorServicio.crearOrdenVenta(
+                LocalDateTime.now(),
+                request.cliente(),
+                vendedor
+        );
     }
 }

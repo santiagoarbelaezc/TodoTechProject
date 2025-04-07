@@ -1,6 +1,7 @@
 package com.example.todotechproject.servicios.UsuarioServicios;
 
 import com.example.todotechproject.dto.UsuarioDTO.UsuarioDTO;
+import com.example.todotechproject.excepciones.UsuarioNoEncontradoException;
 import com.example.todotechproject.modelo.entidades.Usuario;
 import com.example.todotechproject.modelo.enums.TipoUsuario;
 
@@ -36,10 +37,9 @@ public class UsuarioServicioImp implements UsuarioServicio {
 
     @Override
     public Usuario buscarPorUsuario(String usuario) {
-        Optional<Usuario> usuarioOptional = usuarioRepo.findByUsuario(usuario);
-        return usuarioOptional.orElse(null); // o lanza una excepción si prefieres
+        return usuarioRepo.findByUsuario(usuario)
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado: " + usuario));
     }
-
 
 
     @Override
