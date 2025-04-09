@@ -16,6 +16,9 @@ public interface AdminServicio {
 
     void eliminarUsuario(Long usuarioId) throws Exception;
 
+    //SPRINT 2
+    void asignarPermisos (Long usuarioId,TipoUsuario tipo) throws Exception;
+
     void actualizarUsuario(String nombre, String contraseña, TipoUsuario tipo) throws Exception;
 
     Usuario buscarUsuario(Long usuarioId) throws Exception;

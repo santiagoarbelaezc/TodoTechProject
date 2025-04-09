@@ -63,20 +63,25 @@ public class VendedorServicioImp implements VendedorServicio{
         // Lógica para cancelar una orden (se debería interactuar con un repositorio de OrdenVenta)
     }
 
+    //FUNCIONALIDADES DEL CARRITO
+    //HISTORIA DE USUARIO MARIA JOSE
+    //FEDERICO
+
     @Override
-    public void agregarProducto(Producto producto) throws Exception {
-        // Lógica para agregar un producto al inventario
+    public void agregarProductoCarrito(Producto producto) throws Exception {
+
     }
 
     @Override
-    public void eliminarProducto(Producto producto) throws Exception {
-        // Lógica para eliminar un producto del inventario
+    public void eliminarProductoCarrito(Producto producto) throws Exception {
+
     }
 
     @Override
-    public void buscarProducto(String codigo) throws Exception {
-        // Lógica para buscar un producto por código en el inventario
+    public void buscarProductoCarrito(String codigo) throws Exception {
+
     }
+
 
     //JUAN DAVID
 

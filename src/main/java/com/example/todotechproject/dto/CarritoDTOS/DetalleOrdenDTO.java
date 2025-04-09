@@ -1,4 +1,4 @@
-package com.example.todotechproject.dto;
+package com.example.todotechproject.dto.CarritoDTOS;
 
 public record DetalleOrdenDTO(
         Long id,

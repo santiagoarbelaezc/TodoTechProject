@@ -23,6 +23,11 @@ public class ProductoControlador {
     @Autowired
     private VendedorServicio vendedorServicio;
 
+    @GetMapping
+    public List<ProductoDTO> obtenerProductos() {
+        return productoServicio.obtenerTodos();
+    }
+
     @GetMapping("/id/{id}")
     public ProductoDTO obtenerProductoPorId(@PathVariable Long id) {
         return productoServicio.buscarPorId(id);

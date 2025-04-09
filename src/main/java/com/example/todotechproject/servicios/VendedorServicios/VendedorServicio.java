@@ -19,11 +19,13 @@ public interface VendedorServicio {
 
     void cancelarOrdenVenta(Long ordenId) throws Exception;
 
-    void agregarProducto(Producto producto) throws Exception;
+    //FUNCIONALIDADES DEL CARRITO
 
-    void eliminarProducto(Producto producto) throws Exception;
+    void agregarProductoCarrito(Producto producto) throws Exception;
 
-    void buscarProducto(String codigo) throws Exception;
+    void eliminarProductoCarrito(Producto producto) throws Exception;
+
+    void buscarProductoCarrito(String codigo) throws Exception;
 
     List<Producto> buscarProductoNombre(String nombre)throws Exception;
     List<Producto> buscarProductoId(String id)throws Exception;
