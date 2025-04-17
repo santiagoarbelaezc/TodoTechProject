@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.todotechproject.dto.detalleOrden.AgregarProductoDetVenDTO;
 import com.example.todotechproject.modelo.dto.DetalleOrdenDTO;
-import com.example.todotechproject.modelo.entidades.DetalleOrden;
 import com.example.todotechproject.servicios.DetalleOrdenServicios.DetalleOrdenServicio;
 
 @RestController

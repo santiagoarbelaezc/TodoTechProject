@@ -1,15 +1,15 @@
 package com.example.todotechproject.controlador;
 
-import com.example.todotechproject.dto.UsuarioDTO.UsuarioDTO;
+import com.example.todotechproject.modelo.dto.UsuarioDTO.UsuarioDTO;
 import com.example.todotechproject.modelo.entidades.Usuario;
 import com.example.todotechproject.modelo.enums.TipoUsuario;
 import com.example.todotechproject.servicios.UsuarioServicios.UsuarioServicio;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @RestController

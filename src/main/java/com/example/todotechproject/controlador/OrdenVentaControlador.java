@@ -29,40 +29,16 @@ import com.example.todotechproject.servicios.VendedorServicios.VendedorServicio;
 @RestController
 @RequestMapping("/api/orden-venta")
 public class OrdenVentaControlador {
+
   private final OrdenVentaServicio ordenVentaServicio;
-
-  @Autowired
-  private VendedorServicio vendedorServicio;
-
-  @Autowired
-  private UsuarioServicio usuarioServicio;
 
   public OrdenVentaControlador(OrdenVentaServicio ordenVentaServicio) {
     this.ordenVentaServicio = ordenVentaServicio;
   }
 
   @PostMapping
-  public ResponseEntity<?>  create(@RequestBody @Valid OrdenVentaDTO ordenVentaDTO) throws Exception {
-    try {
-      Usuario usuario = usuarioServicio.buscarPorUsuario(request.vendedor());
-
-      if (usuario == null) {
-        return ResponseEntity.badRequest().body("El usuario no existe");
-      }
-
-      Vendedor vendedor = vendedorServicio.buscarVendedorPorUsuario(usuario); // 🔥
-
-      OrdenVenta orden = vendedorServicio.crearOrdenVenta(
-          LocalDateTime.now(),
-          ordenVentaDTO.cliente(),
-          vendedor // ✅ Ahora sí es un Vendedor
-      );
-
-      return ResponseEntity.ok(orden);
-
-    } catch (Exception e) {
-      return ResponseEntity.badRequest().body("Error al crear la orden de venta: " + e.getMessage());
-    }
+  public OrdenVentaDTO create(@RequestBody @Valid OrdenVentaDTO ordenVentaDTO) throws Exception {
+    return ordenVentaServicio.save(ordenVentaDTO);
   }
 
   @PutMapping
