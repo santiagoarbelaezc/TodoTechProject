@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
+import lombok.NonNull;
 
 import com.example.todotechproject.modelo.dto.OrdenVentaDTO;
+import com.example.todotechproject.modelo.enums.EstadoOrden;
 import com.example.todotechproject.servicios.OrdenVentaServicios.OrdenVentaServicio;
 
 @RestController
@@ -37,16 +39,22 @@ public class OrdenVentaControlador {
   }
 
   @GetMapping
-  public List<OrdenVentaDTO> listProduct() {
+  public List<OrdenVentaDTO> listOrdenVenta() {
     return ordenVentaServicio.list();
   }
-  @DeleteMapping("/{id}")
-  public void deleteOrdenVenta(@PathVariable Long id) {
-    ordenVentaServicio.delete(id);
-  }
 
-  @GetMapping("/{id}")
-  public void getOrdenVenta(@PathVariable Long id) {
-    ordenVentaServicio.getOrderById(id);
+  @GetMapping("/vendedor/{id}/estado/{estado}")
+  public List<OrdenVentaDTO> listrOrvenVentaByVendedorAndStatus(@PathVariable @NonNull Long id, @PathVariable @NonNull EstadoOrden estado){
+      return ordenVentaServicio.listByUserAndStatus(id, estado);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteOrdenVenta (@PathVariable Long id){
+      ordenVentaServicio.delete(id);
+    }
+
+    @GetMapping("/{id}")
+    public void getOrdenVenta (@PathVariable Long id){
+      ordenVentaServicio.getOrderById(id);
+    }
   }
-}

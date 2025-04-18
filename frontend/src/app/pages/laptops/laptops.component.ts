@@ -1,6 +1,8 @@
 import {AfterViewInit, Component, HostListener, OnInit} from '@angular/core';
 import {Router} from '@angular/router'; // Importar Router
 import {CommonModule} from '@angular/common';
+import {ProductoDTO} from "../../models/producto.model";
+import {ProductoService} from "../../services/producto.service";
 
 @Component({
     selector: 'app-laptops',
@@ -15,9 +17,15 @@ export class LaptopsComponent implements AfterViewInit, OnInit {
     phrases: string[] = ["-30% en Portátiles", "Descuentos en Gaming", "Ofertas en Smartphones", "Accesorios al mejor precio"];
     currentText: string = this.phrases[0];
     index = 0;
+    productos: ProductoDTO[] = [];
+
 
     ngOnInit(): void {
         this.startTextRotation();
+        this.productoService.getProductos().subscribe({
+            next: (data) => this.productos = data,
+            error: (err) => console.error('Error al cargar productos:', err)
+        });
     }
 
     startTextRotation(): void {
@@ -30,7 +38,7 @@ export class LaptopsComponent implements AfterViewInit, OnInit {
     mostrarCarrito = false; // Controla si el carrito aparece al bajar
     carritoVisible = false; // Controla si el carrito está desplegado
 
-    constructor(private router: Router) {
+    constructor(private router: Router, private productoService: ProductoService) {
     } // Inyectar el Router
 
     @HostListener('window:scroll', [])

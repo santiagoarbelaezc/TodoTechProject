@@ -4,6 +4,8 @@ import {Router} from '@angular/router'; // Importar Router
 import {Observable} from 'rxjs';
 import {UsuarioDTO} from '../../models/usuario.dto';
 import {HttpClient} from '@angular/common/http';
+import {ProductoDTO} from "../../models/producto.model";
+import {ProductoService} from "../../services/producto.service";
 
 @Component({
   selector: 'app-inicio',
@@ -13,6 +15,7 @@ import {HttpClient} from '@angular/common/http';
   styleUrl: './inicio.component.css'
 })
 export class InicioComponent implements AfterViewInit {
+  productos: ProductoDTO[] = [];
 
   private apiUrl = 'http://localhost:8080/api/usuarios';
 
@@ -20,7 +23,7 @@ export class InicioComponent implements AfterViewInit {
   carritoVisible = false; // Controla si el carrito está desplegado
 
   usuarios: UsuarioDTO []= [];
-  constructor(private http: HttpClient,private router: Router) {
+  constructor(private http: HttpClient,private router: Router, private productoService: ProductoService) {
     this.test().subscribe((data: UsuarioDTO[])=>{
       this.usuarios=data
       console.log(data)
@@ -36,6 +39,13 @@ export class InicioComponent implements AfterViewInit {
 
   test(): Observable<UsuarioDTO[]> {
     return this.http.get<UsuarioDTO[]>(`${this.apiUrl}`);
+  }
+
+  ngOnInit(): void {
+    this.productoService.getProductos().subscribe({
+      next: (data) => this.productos = data,
+      error: (err) => console.error('Error al cargar productos:', err)
+    });
   }
 
   

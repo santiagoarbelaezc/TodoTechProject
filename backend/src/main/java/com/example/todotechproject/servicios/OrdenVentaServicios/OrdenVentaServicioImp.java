@@ -6,17 +6,18 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.example.todotechproject.exceptions.NotFoundException;
 import com.example.todotechproject.modelo.dto.ClienteDTO;
 import com.example.todotechproject.modelo.dto.OrdenVentaDTO;
 import com.example.todotechproject.modelo.entidades.OrdenVenta;
 import com.example.todotechproject.modelo.entidades.Vendedor;
+import com.example.todotechproject.modelo.enums.EstadoOrden;
 import com.example.todotechproject.modelo.mapper.ClienteMapper;
 import com.example.todotechproject.modelo.mapper.OrdenVentaMapper;
 import com.example.todotechproject.repositorios.OrdenVentaRepo;
 import com.example.todotechproject.servicios.ClienteServicios.ClienteServicio;
 import com.example.todotechproject.servicios.DetalleOrdenServicios.DetalleOrdenServicio;
 import com.example.todotechproject.servicios.VendedorServicios.VendedorServicio;
-import com.example.todotechproject.exceptions.NotFoundException;
 
 @Service
 public class OrdenVentaServicioImp implements OrdenVentaServicio {
@@ -50,7 +51,6 @@ public class OrdenVentaServicioImp implements OrdenVentaServicio {
     ordenVenta.setCliente(cliente.map(ClienteMapper.INSTANCE::toEntity).get());
     ordenVenta.setVendedor(vendedor);
 
-
     return ordenVentaMapper.toDTO(ordenVentaRepo.save(ordenVenta));
   }
 
@@ -74,6 +74,18 @@ public class OrdenVentaServicioImp implements OrdenVentaServicio {
   @Override
   public List<OrdenVentaDTO> list() {
     return ordenVentaRepo.findAll().stream().map(ordenVentaMapper::toDTO).collect(Collectors.toList());
+  }
+
+  @Override
+  public List<OrdenVentaDTO> listByUserAndStatus(Long id, EstadoOrden estadoOrden) {
+    Vendedor vendedor = vendedorServicio.buscarVendedorPorId(id);
+    if (vendedor == null) {
+      throw new NotFoundException("Vendedor no encontrado id: " + id);
+    }
+    return ordenVentaRepo.findByVendedorIdAndEstado(id, estadoOrden)
+        .stream()
+        .map(ordenVentaMapper::toDTO)
+        .collect(Collectors.toList());
   }
 
   private void verifyExist(Long idOrdenVenta) {

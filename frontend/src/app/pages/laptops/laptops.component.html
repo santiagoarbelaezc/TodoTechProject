@@ -61,7 +61,20 @@
     </div>
   </div>
 
-
+    <section class="products-section">
+        <div class="carousel-container">
+            <button id="prevBtn" class="carousel-btn">❮</button>
+            <div class="carousel">
+                <div class="carousel-item" *ngFor="let producto of productos">
+                    <img src="assets/laptop{{producto.id}}.png" alt="Laptop {{producto.id}}">
+                    <h3>{{ producto.nombre }}</h3>
+                    <p>{{ producto.descripcion }}</p>
+                    <span class="price">{{ producto.precio | currency }}</span>
+                </div>
+            </div>
+            <button id="nextBtn" class="carousel-btn">❯</button>
+        </div>
+    </section>
     <section class="products-section">
         <div class="carousel-container">
             <button id="prevBtn" class="carousel-btn">❮</button>

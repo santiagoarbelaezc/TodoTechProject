@@ -26,7 +26,7 @@ export class OrdenVentaComponent implements OnInit {
     clave: ''
   };
 
-  private apiUrl = 'http://localhost:8080/api/ordenes/crear';
+  private apiUrl = 'http://localhost:8080/api/orden-venta';
 
   constructor(
     private http: HttpClient,

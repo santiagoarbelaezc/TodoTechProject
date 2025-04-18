@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.todotechproject.modelo.dto.OrdenVentaDTO;
+import com.example.todotechproject.modelo.enums.EstadoOrden;
 
 public interface OrdenVentaServicio {
 
@@ -16,4 +17,6 @@ public interface OrdenVentaServicio {
   Optional<OrdenVentaDTO> getOrderById(Long id);
 
   List<OrdenVentaDTO> list();
+
+  List<OrdenVentaDTO> listByUserAndStatus(Long id, EstadoOrden estadoOrden);
 }
