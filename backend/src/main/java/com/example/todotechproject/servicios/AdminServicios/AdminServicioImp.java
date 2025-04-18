@@ -1,0 +1,134 @@
+package com.example.todotechproject.servicios.AdminServicios;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.example.todotechproject.modelo.entidades.OrdenVenta;
+import com.example.todotechproject.modelo.entidades.Producto;
+import com.example.todotechproject.modelo.entidades.ReporteUsuarios;
+import com.example.todotechproject.modelo.entidades.Reportes.ReporteStock;
+import com.example.todotechproject.modelo.entidades.Reportes.ReporteVentas;
+import com.example.todotechproject.modelo.entidades.Usuario;
+import com.example.todotechproject.modelo.entidades.Vendedor;
+import com.example.todotechproject.modelo.enums.TipoUsuario;
+
+@Service
+public class AdminServicioImp implements AdminServicio{
+
+
+    @Override
+    public Usuario registrarUsuario(String nombre, String contraseña, TipoUsuario tipo) throws Exception {
+        return null;
+    }
+
+    @Override
+    public void eliminarUsuario(Long usuarioId) throws Exception {
+
+    }
+
+    @Override
+    public void actualizarUsuario(String nombre, String contraseña, TipoUsuario tipo) throws Exception {
+
+    }
+
+    @Override
+    public Usuario buscarUsuario(Long usuarioId) throws Exception {
+        return null;
+    }
+
+    @Override
+    public List<Usuario> listarUsuarios() throws Exception {
+        return List.of();
+    }
+
+    @Override
+    public void cambiarEstadoUsuario(Long usuarioId, boolean activo) throws Exception {
+
+    }
+
+    @Override
+    public Vendedor crearVendedor(Vendedor vendedor) throws Exception {
+        return null;
+    }
+
+    @Override
+    public Producto registrarProducto(String nombre, String codigo, String descripcion) throws Exception {
+        return null;
+    }
+
+    @Override
+    public void eliminarProducto(Long productoId) throws Exception {
+
+    }
+
+    @Override
+    public void actualizarProducto(String nombre, String codigo, String descripcion) throws Exception {
+
+    }
+
+    @Override
+    public Producto buscarProducto(Long productoId) throws Exception {
+        return null;
+    }
+
+    @Override
+    public Producto buscarProducto(String codigo) throws Exception {
+        return null;
+    }
+
+    @Override
+    public void actualizarStockProducto(Long productoId, int cantidad) throws Exception {
+
+    }
+
+    @Override
+    public void eliminarStockProducto(Long productoId) throws Exception {
+
+    }
+
+    @Override
+    public List<OrdenVenta> listarOrdenesVenta() throws Exception {
+        return List.of();
+    }
+
+    @Override
+    public OrdenVenta buscarOrdenVenta(Long ordenId) throws Exception {
+        return null;
+    }
+
+    @Override
+    public void cancelarOrdenVenta(Long ordenId) throws Exception {
+
+    }
+
+    @Override
+    public List<ReporteVentas> generarReporteVentasPorFecha(String fechaInicio, String fechaFin) throws Exception {
+        return List.of();
+    }
+
+    @Override
+    public List<ReporteStock> generarReporteStockBajo() throws Exception {
+        return List.of();
+    }
+
+    @Override
+    public List<ReporteUsuarios> generarReporteUsuariosActivos() throws Exception {
+        return List.of();
+    }
+
+    @Override
+    public void recibirNuevaMercancia(Long productoId, int cantidadRecibida) throws Exception {
+
+    }
+
+    @Override
+    public void actualizarParametrosSistema(String parametro, String valor) throws Exception {
+
+    }
+
+    @Override
+    public void configurarSeguridad(String tipoSeguridad, String valor) throws Exception {
+
+    }
+}
