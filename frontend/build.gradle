@@ -1,0 +1,22 @@
+
+plugins {
+    id 'java'
+    id 'org.siouan.frontend-jdk17' version '10.0.0'}
+
+
+group = 'com.example'
+version = 'frontend-0.0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+apply plugin: 'org.siouan.frontend-jdk17'
+
+// Configure the Node.js plugin
+
+frontend {
+    nodeVersion.set("18.20.8")
+    assembleScript.set("run build")
+    verboseModeEnabled.set(true)
+}
+
