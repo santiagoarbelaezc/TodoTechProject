@@ -1,0 +1,20 @@
+
+<!-- Carrito (solo aparece al bajar el scroll) -->
+<div class="cart-wrapper" *ngIf="mostrarCarrito">
+    <!-- Botón para abrir/cerrar el carrito -->
+    <button class="cart-button" (click)="toggleCarrito()">
+        🛒 <span>Carrito</span>
+    </button>
+
+    <!-- Contenedor del carrito -->
+    <div class="cart-panel" [ngClass]="{ 'open': carritoVisible }">
+        <div class="cart-header">
+            <h3>🛍 Mi Carrito</h3>
+            <button class="close-btn" (click)="toggleCarrito()">✖</button>
+        </div>
+        <div class="cart-body">
+
+            <p class="empty-text">Tu carrito está vacío</p>
+        </div>
+    </div>
+</div>

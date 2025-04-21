@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, HostListener, OnInit} from '@angular/core';
 import {Router} from '@angular/router'; // Importar Router
 import {CommonModule} from '@angular/common';
-import {ProductoDTO} from "../../models/producto.model";
+import {ProductoDTO} from "../../models/producto.dto";
 import {ProductoService} from "../../services/producto.service";
 
 @Component({

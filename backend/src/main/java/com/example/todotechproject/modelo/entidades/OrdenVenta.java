@@ -40,7 +40,7 @@ public class OrdenVenta {
     @JoinColumn(name = "vendedor_id", referencedColumnName = "id", nullable = false)
     private Vendedor vendedor;
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.REFRESH)
+    @OneToMany(mappedBy = "ordenVenta", cascade = CascadeType.REFRESH)
     private List<DetalleOrden> productos;
 
     @Enumerated(EnumType.STRING)

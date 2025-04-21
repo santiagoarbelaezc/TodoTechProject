@@ -1,21 +1,50 @@
 import {Injectable} from '@angular/core';
 import {UsuarioDTO} from '../models/usuario.dto';
+import {BehaviorSubject, Observable, tap} from "rxjs";
+import {HttpClient} from "@angular/common/http";
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class UsuarioService {
-  private usuarioActual: UsuarioDTO | null = null;
+    private apiUrl = 'http://localhost:8080/api/usuarios/login';
 
-  setUsuario(usuario: UsuarioDTO): void {
-    this.usuarioActual = usuario;
-  }
+    private usuarioActual: UsuarioDTO | null = null;
+    private authStatus = new BehaviorSubject<boolean>(this.isAuthenticated());
 
-  getUsuario(): UsuarioDTO | null {
-    return this.usuarioActual;
-  }
+    constructor(private http: HttpClient) {
+    }
 
-  limpiarUsuario(): void {
-    this.usuarioActual = null;
-  }
+    isAuthenticated(): boolean {
+        return typeof localStorage !== 'undefined' && !!localStorage.getItem('usuario'); //  Verifica si hay un token almacenado
+    }
+
+    setUsuario(usuario: UsuarioDTO): void {
+        this.usuarioActual = usuario;
+    }
+
+    getUsuario(): UsuarioDTO | null {
+        return this.usuarioActual;
+    }
+
+    getAuthStatus() {
+        return this.authStatus.asObservable();
+    }
+
+    limpiarUsuario(): void {
+        localStorage.removeItem('usuario');
+        this.usuarioActual = null;
+        this.authStatus.next(false);
+    }
+
+    login(usuario: string, password: string): Observable<UsuarioDTO> {
+        return this.http.get<UsuarioDTO>(`${this.apiUrl}/${usuario}/${password}`).pipe(
+            tap((usuario: UsuarioDTO) => {
+                this.setUsuario(usuario);
+                localStorage.setItem('usuario', JSON.stringify(usuario));
+                this.authStatus.next(true);// opcional
+            })
+        );
+
+    }
 }

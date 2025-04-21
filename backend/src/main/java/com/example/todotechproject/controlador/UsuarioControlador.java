@@ -32,17 +32,6 @@ public class UsuarioControlador {
         return usuarioServicio.listarUsuarios();
     }
 
-    @GetMapping("/{usuario}/{password}")
-    public ResponseEntity<Boolean> validarCredenciales(@PathVariable String usuario, @PathVariable String password) {
-        Usuario entidad = usuarioServicio.buscarPorUsuario(usuario);
-
-        if (entidad != null && entidad.getPassword().equals(password)) {
-            return ResponseEntity.ok(true);
-        } else {
-            return ResponseEntity.ok(false);
-        }
-    }
-
     // ✅ 2. Login que retorna el UsuarioDTO completo si las credenciales son correctas
     @GetMapping("/login/{usuario}/{password}")
     public ResponseEntity<UsuarioDTO> login(
