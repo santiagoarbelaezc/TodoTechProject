@@ -43,7 +43,7 @@ public class ProductoServicioImp implements ProductoServicio {
 
     @Override
     public List<ProductoDTO> buscarPorNombre(String nombre) {
-        return productoRepo.findByNombreContaining(nombre).stream()
+        return productoRepo.findByNombreContainingIgnoreCase(nombre).stream()
                 .map(ProductoMapper::toDTO)
                 .collect(Collectors.toList());
     }
@@ -53,6 +53,28 @@ public class ProductoServicioImp implements ProductoServicio {
         return productoRepo.findByCategoriaNombre(categoria).stream()
                 .map(ProductoMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    //OBTENER PRODUCTOS POR NOMBRE
+
+    @Override
+    public List<ProductoDTO> obtenerProductosAsus() {
+        return buscarPorNombre("asus");
+    }
+
+    @Override
+    public List<ProductoDTO> obtenerProductosIphone() {
+        return buscarPorNombre("iphone");
+    }
+
+    @Override
+    public List<ProductoDTO> obtenerProductosHp() {
+        return buscarPorNombre("hp");
+    }
+
+    @Override
+    public List<ProductoDTO> obtenerProductosSamsung() {
+        return buscarPorNombre("samsung");
     }
 
 

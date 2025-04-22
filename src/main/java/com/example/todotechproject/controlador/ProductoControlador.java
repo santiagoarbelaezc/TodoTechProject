@@ -27,6 +27,12 @@ public class ProductoControlador {
         return productoServicio.obtenerTodos();
     }
 
+    @GetMapping("/marca/{marca}")
+    public List<ProductoDTO> obtenerProductosPorMarca(@PathVariable String marca) {
+        return productoServicio.buscarPorNombre(marca);
+    }
+
+
     @GetMapping("/id/{id}")
     public ProductoDTO obtenerProductoPorId(@PathVariable Long id) {
         return productoServicio.buscarPorId(id);
