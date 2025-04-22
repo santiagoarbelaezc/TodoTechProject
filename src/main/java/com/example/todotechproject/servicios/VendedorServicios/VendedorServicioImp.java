@@ -6,6 +6,7 @@ import com.example.todotechproject.modelo.enums.EstadoOrden;
 import com.example.todotechproject.repositorios.ClienteRepo;
 import com.example.todotechproject.repositorios.DetalleOrdenRepo;
 import com.example.todotechproject.repositorios.OrdenVentaRepo;
+import com.example.todotechproject.repositorios.ProductoRepo;
 import com.example.todotechproject.repositorios.VendedorRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,8 @@ public class VendedorServicioImp implements VendedorServicio{
 
     @Autowired
     private DetalleOrdenRepo detalleOrdenRepo;
+    @Autowired
+    private ProductoRepo productoRepo;
 
     @Autowired
     private ClienteRepo clienteRepo;
@@ -82,8 +85,25 @@ public class VendedorServicioImp implements VendedorServicio{
 
     @Override
     public int consultarDisponibilidad(String codigo) throws Exception {
-        // Lógica para consultar la disponibilidad de un producto en el inventario
-        return 0;
+        // Lógica para consultar la disponibilidad de un producto en el inventario //ELI
+        //Validar que el código no sea nulo o vacío
+        if (codigo == null || codigo.trim().isEmpty()){
+            throw new IllegalArgumentException("El código del producto no puede ser nulo o vacío");
+        }
+
+        try {
+            //Buscar producto por código
+            Producto producto = productoRepo.findByCodigo(codigo);
+
+            if(producto != null){
+                return producto.getStock();
+            } else {
+                throw new Exception("El producto con código " + codigo + " no existe");
+            }
+        }catch (Exception e) {
+            throw new Exception("Error al consultar la disponibilidad del producto: " + e.getMessage(), e);
+        }
+
     }
 
     @Override
