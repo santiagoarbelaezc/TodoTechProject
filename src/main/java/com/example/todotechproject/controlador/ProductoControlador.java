@@ -22,9 +22,14 @@ public class ProductoControlador {
     @Autowired
     private VendedorServicio vendedorServicio;
 
-    @GetMapping
-    public List<ProductoDTO> obtenerProductos() {
-        return productoServicio.obtenerTodos();
+    @GetMapping("/id/{id}")
+    public ProductoDTO obtenerProductoPorId(@PathVariable Long id) {
+        return productoServicio.buscarPorId(id);
+    }
+
+    @GetMapping("/nombre/{nombre}")
+    public List<ProductoDTO> buscarPorNombre(@PathVariable String nombre) {
+        return productoServicio.buscarPorNombre(nombre);
     }
 
 
@@ -71,6 +76,12 @@ public class ProductoControlador {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error al verificar disponibilidad: " + e.getMessage()));
         }
+    }
+
+
+    @GetMapping("/categoria/{categoria}")
+    public List<ProductoDTO> buscarPorCategoria(@PathVariable String categoria) {
+        return productoServicio.buscarPorCategoria(categoria);
     }
 
 }

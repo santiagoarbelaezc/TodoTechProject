@@ -78,9 +78,25 @@ public class VendedorServicioImp implements VendedorServicio{
         // Lógica para buscar un producto por código en el inventario
     }
 
-    @Override
-    public void buscarProductoNombre(String nombre) throws Exception {
+    //JUAN DAVID
 
+    @Override
+    public List<Producto> buscarProductoNombre(String nombre) throws Exception {
+        return List.of();
+    }
+
+    //JUAN DAVID
+
+    @Override
+    public List<Producto> buscarProductoId(String id) throws Exception {
+        return List.of();
+    }
+
+    //JUAN DAVID
+
+    @Override
+    public List<Producto> buscarProductoCategoria(Categoria categoria) throws Exception {
+        return List.of();
     }
 
     @Override
