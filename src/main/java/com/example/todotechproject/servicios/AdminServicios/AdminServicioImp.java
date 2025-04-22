@@ -24,6 +24,11 @@ public class AdminServicioImp implements AdminServicio{
     }
 
     @Override
+    public void asignarPermisos(Long usuarioId, TipoUsuario tipo) throws Exception {
+
+    }
+
+    @Override
     public void actualizarUsuario(String nombre, String contraseña, TipoUsuario tipo) throws Exception {
 
     }
