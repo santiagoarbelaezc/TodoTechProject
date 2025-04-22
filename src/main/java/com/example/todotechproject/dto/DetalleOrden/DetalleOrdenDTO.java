@@ -1,4 +1,4 @@
-package com.example.todotechproject.dto;
+package com.example.todotechproject.dto.DetalleOrden;
 
 public record DetalleOrdenDTO(
         Long id,
@@ -7,3 +7,4 @@ public record DetalleOrdenDTO(
         Double subtotal,
         Long OrdenVenta
 ) {}
+
