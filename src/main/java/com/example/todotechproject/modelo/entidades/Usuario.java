@@ -2,11 +2,16 @@ package com.example.todotechproject.modelo.entidades;
 
 import com.example.todotechproject.modelo.enums.TipoUsuario;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+
 @Entity
 @Table(name = "usuario")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Usuario {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usuario_seq")
     @SequenceGenerator(name = "usuario_seq", sequenceName = "usuario_seq", allocationSize = 1)
@@ -21,6 +26,4 @@ public class Usuario {
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_usuario", nullable = false)
     private TipoUsuario tipoUsuario;
-
 }
-

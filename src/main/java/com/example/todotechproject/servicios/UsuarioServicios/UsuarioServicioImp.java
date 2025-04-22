@@ -9,6 +9,7 @@ import com.example.todotechproject.repositorios.UsuarioRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -42,6 +43,8 @@ public class UsuarioServicioImp implements UsuarioServicio {
     }
 
 
+
+
     @Override
     public void eliminarUsuario(Usuario usuario) throws Exception {
         if (!usuarioRepo.existsById(usuario.getUsuario())) {
@@ -69,11 +72,15 @@ public class UsuarioServicioImp implements UsuarioServicio {
     }
 
     @Override
-    public List<UsuarioDTO> buscarUsuariosPorTipo(TipoUsuario tipoUsuario) {
-        return usuarioRepo.findByTipoUsuario(tipoUsuario)
-                .stream()
-                .map(u -> new UsuarioDTO(u.getUsuario(), u.getPassword(), u.getTipoUsuario()))
-                .collect(Collectors.toList());
+    public List<Usuario> buscarUsuariosPorTipo(TipoUsuario tipoUsuario) {
+        return new ArrayList<>(usuarioRepo.findByTipoUsuario(tipoUsuario)); // ✅ Se mantiene como Lista<Usuario>
+    }
+
+    @Override
+    public Usuario validarCredenciales(String usuario, String password) {
+        Usuario entidad = usuarioRepo.findByUsuario(usuario)
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado: " + usuario));
+        return entidad.getPassword().equals(password) ? entidad : null;
     }
 
     @Override
