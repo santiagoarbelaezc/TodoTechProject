@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
@@ -11,7 +11,7 @@ import {UsuarioService} from '../../services/usuario.service';
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
     username = '';
     password = '';
@@ -27,12 +27,18 @@ export class LoginComponent {
         }
         this.usuarioService.login(this.username, this.password).subscribe({
             next: () => {
-                this.router.navigate(['/ordenVenta']);
+                this.router.navigate(['/inicio']);
             },
             error: () => {
                 this.usuarioService.limpiarUsuario();
                 alert('Error al obtener los datos del usuario');
             }
         });
+    }
+
+    ngOnInit(): void {
+        if (this.usuarioService.authStatus) {
+            this.router.navigate(['/inicio']);
+        }
     }
 }

@@ -1,55 +1,79 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
 import {ProductoDTO} from "../models/producto.dto";
 import {DetalleOrdenDto} from "../models/detalle.orden.dto";
+import {BehaviorSubject, Observable} from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
 })
 export class CarritoService {
-    private carrito: DetalleOrdenDto[] = [];
+    private carrito: BehaviorSubject<DetalleOrdenDto[]> = new BehaviorSubject<DetalleOrdenDto[]>([]);
     private bloqueado = false;
 
-    constructor(private http: HttpClient) {
+    getCarrito(): Observable<DetalleOrdenDto[]> {
+        return this.carrito.asObservable();
     }
 
-    getCarrito(): DetalleOrdenDto[] {
-        return this.carrito;
+    updateCarrito() {
+        this.carrito.next(this.carrito.getValue());
     }
 
-    addProducto(producto: ProductoDTO): void {
+    public addProducto(producto: ProductoDTO): void {
         if (this.bloqueado) return;
+        if (producto.stock <= 0) {
+            alert('No hay stock disponible');
+            return;
+        }
 
         this.bloqueado = true;
-        const index = this.carrito.findIndex(p => p.producto.id === producto.id);
+        producto.stock = producto.stock - 1;
+        const currentCarrito: DetalleOrdenDto[] = this.getDetalleDto();
+
+        const index = currentCarrito.findIndex(p => p.producto.id === producto.id);
         if (index > -1) {
-            this.carrito[index].cantidad++;
-            this.carrito[index].subtotal = this.carrito[index].cantidad * producto.precio;
+            currentCarrito[index].cantidad++;
+            currentCarrito[index].subtotal = currentCarrito[index].cantidad * producto.precio;
         } else {
             const detalle: DetalleOrdenDto = {
-                id: 0,
+                id: producto.id,
                 producto: producto,
                 cantidad: 1,
                 subtotal: producto.precio,
                 idOrdenVenta: 0
             };
-            this.carrito.push(detalle);
+            currentCarrito.push(detalle);
         }
+        this.updateCarrito();
+
         setTimeout(() => {
             this.bloqueado = false;
         }, 50); // evita clicks múltiples rápidos
     }
 
-    removeProducto(producto: ProductoDTO): void {
+    public removeProducto(producto: ProductoDTO): void {
         if (this.bloqueado) return;
 
         this.bloqueado = true;
-        const index = this.carrito.findIndex(p => p.id === producto.id);
+        const currentCarrito = this.getDetalleDto();
+
+        const index = currentCarrito.findIndex(p => p.producto.id === producto.id);
         if (index > -1) {
-            this.carrito.splice(index, 1);
+            currentCarrito[index].cantidad--;
+            producto.stock++;
+            if (currentCarrito[index].cantidad == 0) {
+                currentCarrito.splice(index, 1);
+
+            } else {
+                currentCarrito[index].subtotal = currentCarrito[index].cantidad * producto.precio;
+            }
         }
+        this.updateCarrito();
         setTimeout(() => {
             this.bloqueado = false;
         }, 50); // evita clicks múltiples rápidos
+    }
+
+    private getDetalleDto(): DetalleOrdenDto[] {
+        return this.carrito.getValue();
     }
 }

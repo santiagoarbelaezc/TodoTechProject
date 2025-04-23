@@ -10,7 +10,7 @@ export class UsuarioService {
     private apiUrl = 'http://localhost:8080/api/usuarios/login';
 
     private usuarioActual: UsuarioDTO | null = null;
-    private authStatus = new BehaviorSubject<boolean>(this.isAuthenticated());
+    public authStatus = new BehaviorSubject<boolean>(this.isAuthenticated());
 
     constructor(private http: HttpClient) {
     }
@@ -40,6 +40,7 @@ export class UsuarioService {
     login(usuario: string, password: string): Observable<UsuarioDTO> {
         return this.http.get<UsuarioDTO>(`${this.apiUrl}/${usuario}/${password}`).pipe(
             tap((usuario: UsuarioDTO) => {
+                console.log('paso por service status:', true);
                 this.setUsuario(usuario);
                 localStorage.setItem('usuario', JSON.stringify(usuario));
                 this.authStatus.next(true);// opcional

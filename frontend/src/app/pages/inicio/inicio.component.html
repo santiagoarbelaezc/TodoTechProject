@@ -7,6 +7,11 @@
                 <h3>{{ producto.nombre }}</h3>
                 <p>{{ producto.descripcion }}</p>
                 <span class="price">{{ producto.precio | currency }}</span>
+                <div class="quantity-controls">
+                    <button (click)="removeCarrito(producto)" >-</button>
+                    <span>{{ producto.stock || 0 }}</span>
+                    <button (click)="addCarrito(producto)" [disabled]="producto.stock === 0">+</button>
+                </div>
             </div>
         </div>
         <button id="nextBtn" class="carousel-btn">❯</button>

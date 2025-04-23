@@ -1,23 +1,22 @@
-<div class="header">
+<div class="header" *ngIf="isLoggedIn">
     <div class="logo">
         <img src="assets/logoTech.png" alt="TodoTech Shop">
     </div>
     <nav>
         <ul class="menu">
-            <li><a href="/inicio">Inicio</a>
-            <li><a href="/laptops">Laptops & PCs</a>
-            <li><a href="/phone">Smartphones</a>
-            <li><a href="/gaming">Gaming</a>
-            <li><a href="/accesorios">Accesorios</a>
+            <li><a routerLink="/inicio">Inicio</a>
+            <li><a routerLink="/laptops">Laptops & PCs</a>
+            <li><a routerLink="/phone">Smartphones</a>
+            <li><a routerLink="/gaming">Gaming</a>
+            <li><a routerLink="/accesorios">Accesorios</a>
         </ul>
     </nav>
     <div class="icons">
-        <i class="fa fa-search"></i>
-        <i class="fab fa-facebook-f"></i>
-
+        <i class="fas fa-search"></i>
+        <i class="fas fa-shopping-cart"></i>
     </div>
 </div>
-<section class="banner">
+<section class="banner" *ngIf="isLoggedIn">
     <div class="banner-content">
         <h2>
             <span class="reveal-text delay-1">¡ Bienvenido a TodoTechShop Tecnología Sin Límites !</span>
