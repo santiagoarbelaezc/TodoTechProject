@@ -1,6 +1,7 @@
 package com.example.todotechproject.controlador;
 
 import com.example.todotechproject.dto.OrdenVenta.CrearOrdenDTO;
+import com.example.todotechproject.dto.OrdenVenta.OrdenVentaDTO;
 import com.example.todotechproject.modelo.entidades.OrdenVenta;
 import com.example.todotechproject.servicios.OrdenVentaServicios.OrdenVentaServicio;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,4 +20,17 @@ public class OrdenVentaControlador {
         OrdenVenta orden = ordenVentaServicio.crearOrdenVenta(request);
         return ResponseEntity.ok(orden);
     }
+
+    //con el mapper
+
+    @GetMapping("/ultima")
+    public ResponseEntity<OrdenVentaDTO> obtenerUltimaOrden() {
+        OrdenVentaDTO orden = ordenVentaServicio.obtenerUltimaOrden();
+        if (orden != null) {
+            return ResponseEntity.ok(orden);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

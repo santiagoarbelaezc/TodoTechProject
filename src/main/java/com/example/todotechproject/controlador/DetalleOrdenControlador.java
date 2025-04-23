@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/detalles")
-@CrossOrigin("*")
+
 public class DetalleOrdenControlador {
 
     @Autowired
@@ -19,6 +19,7 @@ public class DetalleOrdenControlador {
     public ResponseEntity<DetalleOrdenDTO> crearDetalle(@RequestBody CrearDetalleRequest request) {
         return detalleOrdenServicio.crear(request);
     }
+
 
     @DeleteMapping("/eliminar")
     public ResponseEntity<String> eliminarDetalle(@RequestBody CrearDetalleRequest request) {

@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OrdenVentaRepo extends JpaRepository<OrdenVenta, Long> {
+
+    OrdenVenta findTopByOrderByIdDesc();
 }

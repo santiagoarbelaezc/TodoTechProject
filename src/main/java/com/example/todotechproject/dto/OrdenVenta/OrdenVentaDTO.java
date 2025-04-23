@@ -4,6 +4,8 @@ import com.example.todotechproject.dto.ClienteDTO;
 import com.example.todotechproject.dto.DetalleOrden.DetalleOrdenDTO;
 import com.example.todotechproject.dto.VendedorDTO;
 import com.example.todotechproject.modelo.enums.EstadoOrden;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import java.util.Date;
 import java.util.List;

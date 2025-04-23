@@ -2,13 +2,20 @@ package com.example.todotechproject.modelo.entidades;
 
 import com.example.todotechproject.modelo.enums.EstadoOrden;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
+
 @Entity
 @Table(name = "orden_venta")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class OrdenVenta {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "orden_venta_seq")
