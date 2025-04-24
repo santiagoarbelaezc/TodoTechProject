@@ -5,6 +5,7 @@ import com.example.todotechproject.dto.OrdenVenta.OrdenVentaDTO;
 import com.example.todotechproject.modelo.entidades.OrdenVenta;
 import com.example.todotechproject.modelo.entidades.Usuario;
 import com.example.todotechproject.modelo.entidades.Vendedor;
+import com.example.todotechproject.modelo.enums.EstadoOrden;
 import com.example.todotechproject.repositorios.OrdenVentaRepo;
 import com.example.todotechproject.servicios.UsuarioServicios.UsuarioServicio;
 import com.example.todotechproject.servicios.VendedorServicios.VendedorServicio;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class OrdenVentaServicioImp implements OrdenVentaServicio {
@@ -63,5 +66,18 @@ public class OrdenVentaServicioImp implements OrdenVentaServicio {
 
         return OrdenVentaMapper.toDTO(ultimaOrden);
     }
+
+    @Override
+    public OrdenVenta crearOrdenTemporal() {
+        OrdenVenta ordenTemporal = OrdenVenta.builder()
+                .fecha(new Date())
+                .estado(EstadoOrden.PENDIENTE)  // Asegúrate que este valor exista en tu enum
+                .total(0.0)
+                .productos(List.of())  // lista vacía de productos
+                .build();
+
+        return ordenVentaRepo.save(ordenTemporal);
+    }
+
 }
 

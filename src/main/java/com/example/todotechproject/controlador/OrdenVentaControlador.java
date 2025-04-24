@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.example.todotechproject.utils.Mappers.OrdenVentaMapper.toDTO;
+
 @RestController
 @RequestMapping("/api/ordenes")
 public class OrdenVentaControlador {
@@ -33,4 +35,9 @@ public class OrdenVentaControlador {
         }
     }
 
+    @PostMapping("/crear-temporal")
+    public ResponseEntity<OrdenVentaDTO> crearOrdenTemporal() {
+        OrdenVenta orden = ordenVentaServicio.crearOrdenTemporal(); // Retorna una orden vacía
+        return ResponseEntity.ok(toDTO(orden));
+    }
 }

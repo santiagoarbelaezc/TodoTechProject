@@ -10,4 +10,7 @@ public interface OrdenVentaServicio {
     OrdenVenta crearOrdenVenta(CrearOrdenDTO request) throws Exception;
 
     OrdenVentaDTO obtenerUltimaOrden();
+
+
+    OrdenVenta crearOrdenTemporal();
 }

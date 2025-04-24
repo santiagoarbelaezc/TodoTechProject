@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/detalles")
 
@@ -25,5 +27,11 @@ public class DetalleOrdenControlador {
     public ResponseEntity<String> eliminarDetalle(@RequestBody CrearDetalleRequest request) {
         return detalleOrdenServicio.eliminar(request);
     }
+
+    @GetMapping("/orden/{ordenId}")
+    public ResponseEntity<List<DetalleOrdenDTO>> obtenerDetallesPorOrden(@PathVariable Long ordenId) {
+        return ResponseEntity.ok(detalleOrdenServicio.obtenerPorOrdenVenta(ordenId));
+    }
+
 
 }

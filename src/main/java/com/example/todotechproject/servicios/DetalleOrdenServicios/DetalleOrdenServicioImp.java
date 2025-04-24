@@ -15,6 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class DetalleOrdenServicioImp implements DetalleOrdenServicio {
 
@@ -62,6 +65,17 @@ public class DetalleOrdenServicioImp implements DetalleOrdenServicio {
         detalleOrdenRepo.delete(detalle);
         return true;
     }
+
+    //OBTENER PRODUCTOS ASOCIADOS A LA ORDEN ID
+
+    @Override
+    public List<DetalleOrdenDTO> obtenerPorOrdenVenta(Long id) {
+        List<DetalleOrden> detalles = detalleOrdenRepo.findByOrdenVentaId(id);
+        return detalles.stream()
+                .map(DetalleOrdenMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
 
     public ResponseEntity<String> eliminar(CrearDetalleRequest request) {
         try {
