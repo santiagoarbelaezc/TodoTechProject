@@ -46,7 +46,7 @@ VALUES (3, 'Nintendo Switch', 'NSW-003', 'Consola híbrida de Nintendo', 1, 400.
 
 -- ORDEN DE VENTA
 INSERT INTO orden_venta (id, fecha, cliente_id, vendedor_id, estado, total)
-VALUES (1, '2024-04-05', 1, 1, 'PENDIENTE', 700.00);
+VALUES (1, TO_DATE('2024-04-05','YYYY-MM-DD'), 1, 1, 'PENDIENTE', 700.00);
 
 -- DETALLES DE ORDEN
 INSERT INTO detalle_orden (id, producto_id, cantidad, subtotal, orden_venta_id)
