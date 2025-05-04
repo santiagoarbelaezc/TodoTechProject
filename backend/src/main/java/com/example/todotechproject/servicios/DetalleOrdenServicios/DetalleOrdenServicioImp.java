@@ -1,5 +1,6 @@
 package com.example.todotechproject.servicios.DetalleOrdenServicios;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,6 +16,7 @@ import com.example.todotechproject.modelo.mapper.DetalleOrdenMapper;
 import com.example.todotechproject.repositorios.DetalleOrdenRepo;
 import com.example.todotechproject.repositorios.ProductoRepo;
 import com.example.todotechproject.exceptions.NotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DetalleOrdenServicioImp implements DetalleOrdenServicio {
@@ -39,7 +41,29 @@ public class DetalleOrdenServicioImp implements DetalleOrdenServicio {
     }
 
     DetalleOrden newDetalleOrden = createDetalleOrden(detalleOrdenDTO, producto);
+    actualizarProducto(producto, newDetalleOrden);
     return Optional.of(detalleOrdenMapper.toDto(detalleOrdenRepo.save(newDetalleOrden)));
+  }
+
+  @Transactional
+  public synchronized List<DetalleOrdenDTO> save(List<DetalleOrdenDTO> detalleOrdenDTO, OrdenVenta ordenVenta) {
+    List<DetalleOrdenDTO> listadetalle = new ArrayList<>();
+    for (int i = 0; i < detalleOrdenDTO.size(); i++) {
+
+      save(detalleOrdenDTO.get(i).withOrdenVenta(ordenVenta.getId())).ifPresent(listadetalle::add);
+    }
+    return listadetalle;
+  }
+
+  void actualizarProducto(Producto producto, DetalleOrden detalleOrden){
+    if(producto.getStock() >= detalleOrden.getCantidad() && detalleOrden.getCantidad()!= 0){
+      int update = producto.getStock() - detalleOrden.getCantidad();
+      producto.setStock(update);
+      productoRepo.save(producto);
+    } else {
+      throw new NotFoundException("No existen suficientes productos en stock para realizar la compra " + producto.getStock());
+
+    }
   }
 
   private void updateDetalleOrden(DetalleOrden detalleOrden, DetalleOrdenDTO detalleOrdenDTO, Producto producto) {

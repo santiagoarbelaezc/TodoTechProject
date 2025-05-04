@@ -2,8 +2,11 @@ package com.example.todotechproject.servicios.OrdenVentaServicios;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.DoubleBinaryOperator;
 import java.util.stream.Collectors;
 
+import com.example.todotechproject.modelo.dto.DetalleOrdenDTO;
+import com.example.todotechproject.modelo.mapper.ProductoMapper;
 import org.springframework.stereotype.Service;
 
 import com.example.todotechproject.exceptions.NotFoundException;
@@ -50,6 +53,12 @@ public class OrdenVentaServicioImp implements OrdenVentaServicio {
     OrdenVenta ordenVenta = ordenVentaMapper.toEntity(ordenVentaDTO);
     ordenVenta.setCliente(cliente.map(ClienteMapper.INSTANCE::toEntity).get());
     ordenVenta.setVendedor(vendedor);
+    OrdenVenta ordenVenta1 = ordenVentaRepo.save(ordenVenta);
+
+
+    List<DetalleOrdenDTO> detalleOrdenDTOS = detalleOrdenServicio.save(ordenVentaDTO.productos(), ordenVenta1);
+    ordenVenta1.setTotal(detalleOrdenDTOS.stream().mapToDouble(DetalleOrdenDTO::subtotal).sum());
+
 
     return ordenVentaMapper.toDTO(ordenVentaRepo.save(ordenVenta));
   }
