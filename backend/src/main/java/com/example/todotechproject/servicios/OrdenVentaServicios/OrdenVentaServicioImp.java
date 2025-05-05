@@ -2,21 +2,20 @@ package com.example.todotechproject.servicios.OrdenVentaServicios;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.DoubleBinaryOperator;
 import java.util.stream.Collectors;
 
-import com.example.todotechproject.modelo.dto.DetalleOrdenDTO;
-import com.example.todotechproject.modelo.mapper.ProductoMapper;
 import org.springframework.stereotype.Service;
 
 import com.example.todotechproject.exceptions.NotFoundException;
 import com.example.todotechproject.modelo.dto.ClienteDTO;
+import com.example.todotechproject.modelo.dto.DetalleOrdenDTO;
 import com.example.todotechproject.modelo.dto.OrdenVentaDTO;
 import com.example.todotechproject.modelo.entidades.OrdenVenta;
 import com.example.todotechproject.modelo.entidades.Vendedor;
 import com.example.todotechproject.modelo.enums.EstadoOrden;
 import com.example.todotechproject.modelo.mapper.ClienteMapper;
 import com.example.todotechproject.modelo.mapper.OrdenVentaMapper;
+import com.example.todotechproject.modelo.mapper.UsuarioMapper;
 import com.example.todotechproject.repositorios.OrdenVentaRepo;
 import com.example.todotechproject.servicios.ClienteServicios.ClienteServicio;
 import com.example.todotechproject.servicios.DetalleOrdenServicios.DetalleOrdenServicio;
@@ -27,14 +26,16 @@ public class OrdenVentaServicioImp implements OrdenVentaServicio {
 
   private final OrdenVentaRepo ordenVentaRepo;
   private final OrdenVentaMapper ordenVentaMapper;
+  private final UsuarioMapper usuarioMapper;
   private final DetalleOrdenServicio detalleOrdenServicio;
   private final VendedorServicio vendedorServicio;
   private final ClienteServicio clienteServicio;
 
-  OrdenVentaServicioImp(OrdenVentaRepo ordenVentaRepo, OrdenVentaMapper ordenVentaMapper,
+  OrdenVentaServicioImp(OrdenVentaRepo ordenVentaRepo, OrdenVentaMapper ordenVentaMapper, UsuarioMapper usuarioMapper,
       DetalleOrdenServicio detalleOrdenServicio, VendedorServicio vendedorServicio, ClienteServicio clienteServicio) {
     this.ordenVentaRepo = ordenVentaRepo;
     this.ordenVentaMapper = ordenVentaMapper;
+    this.usuarioMapper = usuarioMapper;
     this.detalleOrdenServicio = detalleOrdenServicio;
     this.vendedorServicio = vendedorServicio;
     this.clienteServicio = clienteServicio;
@@ -42,9 +43,21 @@ public class OrdenVentaServicioImp implements OrdenVentaServicio {
 
   @Override
   public OrdenVentaDTO save(OrdenVentaDTO ordenVentaDTO) {
-    Optional<ClienteDTO> cliente = clienteServicio.getClientById(ordenVentaDTO.cliente().id());
-    Vendedor vendedor = vendedorServicio.buscarVendedorPorId(ordenVentaDTO.vendedor().id());
-    if (cliente.isEmpty()) {
+    Optional<ClienteDTO> cliente = null;
+    if (ordenVentaDTO.cliente().id() != null) {
+      cliente = clienteServicio.getClientById(ordenVentaDTO.cliente().id());
+    } else if (ordenVentaDTO.cliente().correo() != null) {
+      cliente = clienteServicio.getClientByCorreo(ordenVentaDTO.cliente().correo());
+    } else {
+      throw new NotFoundException("Cliente no encontrado con correo: " + ordenVentaDTO.cliente().correo());
+    }
+    Vendedor vendedor = null;
+
+    if(ordenVentaDTO.vendedor().id() != null ) {
+      vendedor = vendedorServicio.buscarVendedorPorId(ordenVentaDTO.vendedor().id());
+    }
+    if (vendedor == null && ordenVentaDTO.vendedor().usuario() != null) {
+      vendedor = vendedorServicio.buscarVendedorPorUsuario(usuarioMapper.toEntity(ordenVentaDTO.vendedor().usuario()));
       throw new NotFoundException("Cliente no encontrado id: " + ordenVentaDTO.cliente().id());
     }
     if (vendedor == null) {
@@ -55,10 +68,8 @@ public class OrdenVentaServicioImp implements OrdenVentaServicio {
     ordenVenta.setVendedor(vendedor);
     OrdenVenta ordenVenta1 = ordenVentaRepo.save(ordenVenta);
 
-
     List<DetalleOrdenDTO> detalleOrdenDTOS = detalleOrdenServicio.save(ordenVentaDTO.productos(), ordenVenta1);
     ordenVenta1.setTotal(detalleOrdenDTOS.stream().mapToDouble(DetalleOrdenDTO::subtotal).sum());
-
 
     return ordenVentaMapper.toDTO(ordenVentaRepo.save(ordenVenta));
   }

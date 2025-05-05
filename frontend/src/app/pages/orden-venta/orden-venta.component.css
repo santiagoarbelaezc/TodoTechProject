@@ -6,11 +6,11 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
   
-  body {
+  .body {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    min-height: 35vh;
     padding: 40px;
     background: url('/assets/loginFondo.png') no-repeat center center/cover;
     background-attachment: fixed;
@@ -19,7 +19,7 @@
   /* Contenedor principal más grande */
   .orden-venta-container {
     background: rgba(255, 255, 255, 0.05);
-    padding: 50px;
+    padding: 30px;
     border-radius: 20px;
     backdrop-filter: blur(12px);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
@@ -120,4 +120,10 @@
     background: rgba(255, 255, 255, 0.15);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
+
+
+img {
+  width: 80px;
+  height: 80px;
+}
   

@@ -24,6 +24,14 @@ export class UsuarioService {
     }
 
     getUsuario(): UsuarioDTO | null {
+        if (this.usuarioActual) {
+            return this.usuarioActual;
+        } else {
+            const usuarioGuardado = localStorage.getItem('usuario');
+            if (usuarioGuardado) {
+                this.setUsuario(JSON.parse(usuarioGuardado));
+            }
+        }
         return this.usuarioActual;
     }
 

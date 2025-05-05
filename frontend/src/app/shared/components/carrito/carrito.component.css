@@ -123,6 +123,10 @@
     width: 100%;
     transition: background-color 0.3s ease;
 }
+.crear-orden-btn:disabled {
+    background-color: #535a54;
+    cursor: not-allowed;
+}
 
 .checkout-btn:hover {
     background-color: #45a049;

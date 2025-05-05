@@ -65,7 +65,7 @@ nav ul li a:hover {
 /* Banner */
 .banner {
     background: url('/assets/banner.png') center/cover no-repeat fixed;
-    height: 400px;
+    height: 150px;
     color: white;
     text-align: center;
     display: flex;

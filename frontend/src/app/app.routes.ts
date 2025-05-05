@@ -19,7 +19,7 @@ export const routes: Routes = [
    { path: 'gaming', component: GamingComponent , canActivate: [AuthGuard] },
    { path: 'laptops', component: LaptopsComponent , canActivate: [AuthGuard] },
    { path: 'accesorios', component: AccesoriosComponent , canActivate: [AuthGuard] },
-   { path: 'ordenVenta', component: OrdenVentaComponent, canActivate: [AuthGuard] },
+   { path: 'orden-venta', component: OrdenVentaComponent, canActivate: [AuthGuard] },
 
    { path: '**', redirectTo: 'login', pathMatch: 'full' } // Rutas no encontradas -> login
 ];

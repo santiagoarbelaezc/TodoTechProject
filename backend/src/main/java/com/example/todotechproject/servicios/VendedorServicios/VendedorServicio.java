@@ -8,23 +8,23 @@ import com.example.todotechproject.modelo.entidades.Categoria;
 import com.example.todotechproject.modelo.entidades.Cliente;
 import com.example.todotechproject.modelo.entidades.OrdenVenta;
 import com.example.todotechproject.modelo.entidades.Producto;
+import com.example.todotechproject.modelo.entidades.Usuario;
 import com.example.todotechproject.modelo.entidades.Vendedor;
 import com.example.todotechproject.modelo.enums.EstadoOrden;
 
 public interface VendedorServicio {
 
-
-    //SERVICIOS DEL EMPLEADO
-    //SPRINT 1
+  //SERVICIOS DEL EMPLEADO
+  //SPRINT 1
 
   OrdenVenta crearOrdenVenta(LocalDateTime fecha, Cliente cliente, Vendedor vendedor, List<Producto> productoList
       , EstadoOrden estadoOrden, double total) throws Exception;
 
-    void cancelarOrdenVenta(Long ordenId) throws Exception;
+  void cancelarOrdenVenta(Long ordenId) throws Exception;
 
-    void agregarProducto(Producto producto) throws Exception;
+  void agregarProducto(Producto producto) throws Exception;
 
-    void eliminarProducto(Producto producto) throws Exception;
+  void eliminarProducto(Producto producto) throws Exception;
 
   List<Producto> buscarProductoPorCodigo(String codigo) throws Exception;
 
@@ -36,13 +36,15 @@ public interface VendedorServicio {
 
   void ingresarDescuento(String codigo, double descuento) throws Exception;
 
-    void modificarCantidadProducto(String codigo, int nuevaCantidad) throws Exception;
+  void modificarCantidadProducto(String codigo, int nuevaCantidad) throws Exception;
 
   void actualizarVendedor(Vendedor vendedor);
 
-    void eliminarVendedor(Long id);
+  void eliminarVendedor(Long id);
 
-    Vendedor buscarVendedorPorId(Long id);
+  Vendedor buscarVendedorPorId(Long id);
 
-    List<VendedorDTO> listarVendedores();
+  List<VendedorDTO> listarVendedores();
+
+  Vendedor buscarVendedorPorUsuario(Usuario usuario);
 }

@@ -44,17 +44,18 @@ public class OrdenVentaControlador {
   }
 
   @GetMapping("/vendedor/{id}/estado/{estado}")
-  public List<OrdenVentaDTO> listrOrvenVentaByVendedorAndStatus(@PathVariable @NonNull Long id, @PathVariable @NonNull EstadoOrden estado){
-      return ordenVentaServicio.listByUserAndStatus(id, estado);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteOrdenVenta (@PathVariable Long id){
-      ordenVentaServicio.delete(id);
-    }
-
-    @GetMapping("/{id}")
-    public void getOrdenVenta (@PathVariable Long id){
-      ordenVentaServicio.getOrderById(id);
-    }
+  public List<OrdenVentaDTO> listarOrdenVentaByVendedorAndStatus(@PathVariable @NonNull Long id,
+      @PathVariable @NonNull EstadoOrden estado) {
+    return ordenVentaServicio.listByUserAndStatus(id, estado);
   }
+
+  @DeleteMapping("/{id}")
+  public void deleteOrdenVenta(@PathVariable Long id) {
+    ordenVentaServicio.delete(id);
+  }
+
+  @GetMapping("/{id}")
+  public void getOrdenVenta(@PathVariable Long id) {
+    ordenVentaServicio.getOrderById(id);
+  }
+}

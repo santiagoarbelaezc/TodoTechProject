@@ -21,6 +21,29 @@ public class ClienteServicioImp implements ClienteServicio {
 
   @Override
   public Optional<ClienteDTO> getClientById(Long id) {
+    if (id == null) {
+      return Optional.empty();
+    }
     return clienteRepo.findById(id).map(clienteMapper::toDto);
+  }
+
+  @Override
+  public Optional<ClienteDTO> getClientByCorreo(String correo) {
+    if (correo == null) {
+      return Optional.empty();
+    }
+    return clienteRepo.findByCorreo(correo).map(clienteMapper::toDto);
+  }
+
+  @Override
+  public Optional<ClienteDTO> getClientByIdAndCorreo(Long id, String email) {
+    Optional<ClienteDTO> cliente = getClientById(id);
+    if (cliente.isPresent()) {
+      return cliente;
+    } else {
+      cliente = getClientByCorreo(email);
+    }
+
+    return cliente;
   }
 }

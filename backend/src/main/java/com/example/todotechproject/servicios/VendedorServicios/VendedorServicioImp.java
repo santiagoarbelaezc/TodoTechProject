@@ -62,10 +62,6 @@ public class VendedorServicioImp implements VendedorServicio {
     return ordenVenta;
   }
 
-  public Vendedor buscarVendedorPorUsuario(Usuario usuario) {
-    return vendedorRepo.findByUsuario(usuario)
-        .orElseThrow(() -> new RuntimeException("Vendedor no encontrado para el usuario: " + usuario.getUsuario()));
-  }
 
   @Override
   public void cancelarOrdenVenta(Long ordenId) throws Exception {
@@ -142,4 +138,11 @@ public class VendedorServicioImp implements VendedorServicio {
         .map(v -> vendedorMapper.toDto(v))
         .collect(Collectors.toList());
   }
+
+  @Override
+  public Vendedor buscarVendedorPorUsuario(Usuario usuario) {
+    return vendedorRepo.findByUsuario(usuario)
+        .orElse(null);
+  }
+
 }

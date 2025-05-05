@@ -8,10 +8,17 @@ import {BehaviorSubject, Observable} from 'rxjs';
 })
 export class CarritoService {
     private carrito: BehaviorSubject<DetalleOrdenDto[]> = new BehaviorSubject<DetalleOrdenDto[]>([]);
+    public total: number = 0;
+    public totalItems: number = 0;
     private bloqueado = false;
 
     getCarrito(): Observable<DetalleOrdenDto[]> {
-        return this.carrito.asObservable();
+        return this.carrito.asObservable().pipe( carrito =>{
+            let carritoList = this.carrito.getValue();
+            this.total = carritoList.reduce((total, item) => total + item.subtotal, 0);
+            this.totalItems = carritoList.reduce((total, item) => total + item.cantidad, 0);
+            return carrito;
+        });
     }
 
     updateCarrito() {
@@ -75,5 +82,16 @@ export class CarritoService {
 
     private getDetalleDto(): DetalleOrdenDto[] {
         return this.carrito.getValue();
+    }
+    public clearCarrito(): void {
+        this.carrito.next([]);
+        this.total = 0;
+        this.totalItems = 0;
+    }
+    public getTotal(): number {
+        return this.total;
+    }
+    public getTotalItems(): number {
+        return this.totalItems;
     }
 }
