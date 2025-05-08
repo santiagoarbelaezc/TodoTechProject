@@ -5,6 +5,9 @@ import com.example.todotechproject.dto.ProductoDTO;
 import java.util.List;
 
 public interface ProductoServicio {
+
+    ProductoDTO crearProducto(ProductoDTO productoDTO);
+
     List<ProductoDTO> obtenerTodos();
 
     ProductoDTO buscarPorId(Long id);

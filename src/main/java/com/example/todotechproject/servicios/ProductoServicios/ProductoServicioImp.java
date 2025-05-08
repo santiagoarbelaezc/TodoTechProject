@@ -1,7 +1,9 @@
 package com.example.todotechproject.servicios.ProductoServicios;
 
 import com.example.todotechproject.dto.ProductoDTO;
+import com.example.todotechproject.modelo.entidades.Categoria;
 import com.example.todotechproject.modelo.entidades.Producto;
+import com.example.todotechproject.repositorios.CategoriaRepo;
 import com.example.todotechproject.repositorios.ProductoRepo;
 import com.example.todotechproject.utils.Mappers.ProductoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,9 @@ public class ProductoServicioImp implements ProductoServicio {
 
     @Autowired
     private ProductoRepo productoRepo;
+
+    @Autowired
+    private CategoriaRepo categoriaRepo;
 
     @Override
     public List<ProductoDTO> obtenerTodos() {
@@ -76,6 +81,28 @@ public class ProductoServicioImp implements ProductoServicio {
     public List<ProductoDTO> obtenerProductosSamsung() {
         return buscarPorNombre("samsung");
     }
+
+    @Override
+    public ProductoDTO crearProducto(ProductoDTO productoDTO) {
+        Producto producto = new Producto();
+        producto.setNombre(productoDTO.getNombre());
+        producto.setCodigo(productoDTO.getCodigo());
+        producto.setDescripcion(productoDTO.getDescripcion());
+        producto.setPrecio(productoDTO.getPrecio());
+        producto.setStock(productoDTO.getStock());
+        producto.setImagen(productoDTO.getImagen());
+
+        // Suponiendo que el campo `categoria` del DTO es el nombre de la categoría
+        Categoria categoria = categoriaRepo.findCategoriaByNombre(productoDTO.getCategoria());
+        if (categoria == null) {
+            throw new IllegalArgumentException("Categoría no encontrada: " + productoDTO.getCategoria());
+        }
+        producto.setCategoria(categoria);
+
+        producto = productoRepo.save(producto);
+        return ProductoMapper.toDTO(producto);
+    }
+
 
 
 }

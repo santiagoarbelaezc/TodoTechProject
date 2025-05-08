@@ -44,13 +44,6 @@ public class ProductoControlador {
     }
 
 
-
-
-    /**
-     * Endpoint para consultar la disponibilidad de un producto por su código
-     * @param codigo Código del producto a consultar
-     * @return Respuesta con el stock disponible o mensaje de error
-     */
     @GetMapping("/disponibilidad/{codigo}")
     public ResponseEntity<?> consultarDisponibilidad(@PathVariable String codigo) {
         try {
@@ -70,11 +63,7 @@ public class ProductoControlador {
         }
     }
 
-    /**
-     * Endpoint para verificar si un producto está disponible (stock > 0)
-     * @param codigo Código del producto a verificar
-     * @return Respuesta indicando si el producto está disponible
-     */
+
     @GetMapping("/disponible/{codigo}")
     public ResponseEntity<?> isProductoDisponible(@PathVariable String codigo) {
         try {
@@ -96,5 +85,24 @@ public class ProductoControlador {
     public List<ProductoDTO> buscarPorCategoria(@PathVariable String categoria) {
         return productoServicio.buscarPorCategoria(categoria);
     }
+
+
+    @PostMapping("/crear")
+    public ResponseEntity<?> crearProducto(@RequestBody ProductoDTO productoDTO) {
+        try {
+            productoServicio.crearProducto(productoDTO);
+            // Solo guarda, no devuelve nada
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(Map.of("mensaje", "Producto creado con éxito"));
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Error al crear el producto: " + e.getMessage()));
+        }
+    }
+
+
 
 }
