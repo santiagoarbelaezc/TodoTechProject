@@ -2,6 +2,7 @@ package com.example.todotechproject.servicios.DetalleOrdenServicios;
 
 import com.example.todotechproject.dto.DetalleOrden.CrearDetalleRequest;
 import com.example.todotechproject.dto.DetalleOrden.DetalleOrdenDTO;
+import com.example.todotechproject.dto.DetalleOrden.EliminarDetalleRequest;
 import com.example.todotechproject.dto.ProductoDTO;
 import com.example.todotechproject.modelo.entidades.DetalleOrden;
 import com.example.todotechproject.modelo.entidades.OrdenVenta;
@@ -38,15 +39,31 @@ public class DetalleOrdenServicioImp implements DetalleOrdenServicio {
         OrdenVenta orden = ordenVentaRepo.findById(ordenVentaId)
                 .orElseThrow(() -> new RuntimeException("Orden de venta no encontrada"));
 
-        DetalleOrden detalle = new DetalleOrden();
-        detalle.setProducto(producto);
-        detalle.setCantidad(1); // Puedes parametrizarlo si deseas
-        detalle.setSubtotal(producto.getPrecio());
-        detalle.setOrdenVenta(orden);
+        // Verificamos si ya existe un detalle con ese producto y orden
+        DetalleOrden detalleExistente = detalleOrdenRepo
+                .findByProductoIdAndOrdenVentaId(producto.getId(), orden.getId())
+                .orElse(null);
 
-        DetalleOrden guardado = detalleOrdenRepo.save(detalle);
+        if (detalleExistente != null) {
+            // Si existe, incrementamos cantidad y subtotal
+            int nuevaCantidad = detalleExistente.getCantidad() + 1;
+            detalleExistente.setCantidad(nuevaCantidad);
+            detalleExistente.setSubtotal(producto.getPrecio() * nuevaCantidad);
+            DetalleOrden actualizado = detalleOrdenRepo.save(detalleExistente);
+            return DetalleOrdenMapper.toDTO(actualizado);
+        }
+
+        // Si no existe, creamos uno nuevo
+        DetalleOrden nuevoDetalle = new DetalleOrden();
+        nuevoDetalle.setProducto(producto);
+        nuevoDetalle.setCantidad(1);
+        nuevoDetalle.setSubtotal(producto.getPrecio());
+        nuevoDetalle.setOrdenVenta(orden);
+
+        DetalleOrden guardado = detalleOrdenRepo.save(nuevoDetalle);
         return DetalleOrdenMapper.toDTO(guardado);
     }
+
 
     public ResponseEntity<DetalleOrdenDTO> crear(CrearDetalleRequest request) {
         try {
@@ -76,19 +93,64 @@ public class DetalleOrdenServicioImp implements DetalleOrdenServicio {
                 .collect(Collectors.toList());
     }
 
-
-    public ResponseEntity<String> eliminar(CrearDetalleRequest request) {
+    @Override
+    public ResponseEntity<String> eliminar(EliminarDetalleRequest request) {
         try {
             boolean eliminado = eliminarPorProductoYOrden(
-                    request.getProducto().getId(),
-                    request.getOrdenVentaId()
+                    request.productoId(),
+                    request.ordenVentaId()
             );
-            return eliminado ?
-                    ResponseEntity.ok("Detalle eliminado correctamente") :
-                    ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontró el detalle");
+
+            // Crear una respuesta JSON como String
+            String responseMessage;
+            if (eliminado) {
+                responseMessage = "{\"message\": \"Detalle eliminado correctamente\"}";
+            } else {
+                responseMessage = "{\"message\": \"No se encontró el detalle\"}";
+            }
+
+            // Devolver la respuesta como String con código de estado adecuado
+            return ResponseEntity.status(eliminado ? HttpStatus.OK : HttpStatus.NOT_FOUND)
+                    .body(responseMessage);
+
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            // En caso de error, devolver un mensaje JSON de error
+            String errorMessage = "{\"error\": \"" + e.getMessage() + "\"}";
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
         }
     }
+
+
+
+    @Override
+    public ResponseEntity<DetalleOrdenDTO> aumentarCantidad(Long productoId, Long ordenVentaId) {
+        DetalleOrden detalle = detalleOrdenRepo.findByProductoIdAndOrdenVentaId(productoId, ordenVentaId)
+                .orElseThrow(() -> new RuntimeException("Detalle de orden no encontrado"));
+
+        int nuevaCantidad = detalle.getCantidad() + 1;
+        detalle.setCantidad(nuevaCantidad);
+        detalle.setSubtotal(detalle.getProducto().getPrecio() * nuevaCantidad);
+
+        DetalleOrden actualizado = detalleOrdenRepo.save(detalle);
+        return ResponseEntity.ok(DetalleOrdenMapper.toDTO(actualizado));
+    }
+
+    @Override
+    public ResponseEntity<DetalleOrdenDTO> disminuirCantidad(Long productoId, Long ordenVentaId) {
+        DetalleOrden detalle = detalleOrdenRepo.findByProductoIdAndOrdenVentaId(productoId, ordenVentaId)
+                .orElseThrow(() -> new RuntimeException("Detalle de orden no encontrado"));
+
+        if (detalle.getCantidad() <= 1) {
+            return ResponseEntity.badRequest().body(null); // o podrías eliminar el detalle si la cantidad es 1
+        }
+
+        int nuevaCantidad = detalle.getCantidad() - 1;
+        detalle.setCantidad(nuevaCantidad);
+        detalle.setSubtotal(detalle.getProducto().getPrecio() * nuevaCantidad);
+
+        DetalleOrden actualizado = detalleOrdenRepo.save(detalle);
+        return ResponseEntity.ok(DetalleOrdenMapper.toDTO(actualizado));
+    }
+
 
 }

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrdenVentaServicioImp implements OrdenVentaServicio {
@@ -78,6 +79,20 @@ public class OrdenVentaServicioImp implements OrdenVentaServicio {
 
         return ordenVentaRepo.save(ordenTemporal);
     }
+
+    @Override
+    public Optional<OrdenVentaDTO> obtenerOrdenPorId(Long id) {
+        return ordenVentaRepo.findById(id)
+                .map(orden -> {
+                    // Forzar carga de relaciones perezosas
+                    orden.getCliente().getNombre();
+                    orden.getVendedor().getNombre();
+                    orden.getProductos().forEach(p -> p.getProducto().getId());
+
+                    return OrdenVentaMapper.toDTO(orden);
+                });
+    }
+
 
 }
 

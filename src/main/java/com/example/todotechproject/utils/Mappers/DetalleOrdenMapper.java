@@ -10,7 +10,7 @@ public class DetalleOrdenMapper {
 
         return new DetalleOrdenDTO(
                 detalle.getId(),
-                detalle.getProducto().getId(),
+                ProductoMapper.toDTO(detalle.getProducto()), // <-- Aquí mapeamos correctamente el producto
                 detalle.getCantidad(),
                 detalle.getSubtotal(),
                 detalle.getOrdenVenta() != null ? detalle.getOrdenVenta().getId() : null

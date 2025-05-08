@@ -3,7 +3,9 @@ package com.example.todotechproject.controlador;
 import com.example.todotechproject.dto.ProductoDTO;
 import com.example.todotechproject.servicios.ProductoServicios.ProductoServicio;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+
 import com.example.todotechproject.servicios.VendedorServicios.VendedorServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -102,7 +104,6 @@ public class ProductoControlador {
                     .body(Map.of("error", "Error al crear el producto: " + e.getMessage()));
         }
     }
-
 
 
 }

@@ -1,7 +1,9 @@
 package com.example.todotechproject.servicios.DetalleOrdenServicios;
 
 import com.example.todotechproject.dto.DetalleOrden.DetalleOrdenDTO;
+import com.example.todotechproject.dto.DetalleOrden.EliminarDetalleRequest;
 import com.example.todotechproject.dto.ProductoDTO;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -12,5 +14,11 @@ public interface DetalleOrdenServicio {
     boolean eliminarPorProductoYOrden(Long productoId, Long ordenVentaId);
 
     List<DetalleOrdenDTO> obtenerPorOrdenVenta(Long id)throws Exception;
+
+    ResponseEntity<String> eliminar(EliminarDetalleRequest request);
+
+    ResponseEntity<DetalleOrdenDTO> aumentarCantidad(Long productoId, Long ordenVentaId);
+
+    ResponseEntity<DetalleOrdenDTO> disminuirCantidad(Long productoId, Long ordenVentaId);
 }
 

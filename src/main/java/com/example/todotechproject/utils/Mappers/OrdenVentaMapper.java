@@ -5,9 +5,7 @@ import com.example.todotechproject.dto.ClienteDTO;
 import com.example.todotechproject.dto.DetalleOrden.DetalleOrdenDTO;
 import com.example.todotechproject.dto.VendedorDTO;
 import com.example.todotechproject.modelo.entidades.OrdenVenta;
-import com.example.todotechproject.modelo.enums.EstadoOrden;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class OrdenVentaMapper {
@@ -33,9 +31,7 @@ public class OrdenVentaMapper {
                         ordenVenta.getVendedor().getUsuario()
                 ),
                 ordenVenta.getProductos().stream()
-                        .map(detalle -> new DetalleOrdenDTO(detalle.getId(), detalle.getProducto().getId(),
-                                detalle.getCantidad(), detalle.getSubtotal(),
-                                detalle.getOrdenVenta().getId()))
+                        .map(DetalleOrdenMapper::toDTO) // Usamos el mapper existente
                         .collect(Collectors.toList()),
                 ordenVenta.getEstado(),
                 ordenVenta.getTotal()
@@ -53,11 +49,7 @@ public class OrdenVentaMapper {
         ordenVenta.setEstado(dto.estado());
         ordenVenta.setTotal(dto.total());
 
-        // Aquí deberías asignar cliente y vendedor desde su entidad correspondiente
-        // Esto depende de cómo obtengas los datos en tu aplicación
-        // ordenVenta.setCliente(clienteRepository.findById(dto.cliente().getId()).orElse(null));
-        // ordenVenta.setVendedor(vendedorRepository.findById(dto.vendedor().getId()).orElse(null));
-
+        // Cliente y vendedor deben ser asignados en el servicio al obtenerlos desde el repositorio.
         return ordenVenta;
     }
 }

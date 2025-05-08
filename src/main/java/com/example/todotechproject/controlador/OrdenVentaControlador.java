@@ -35,6 +35,14 @@ public class OrdenVentaControlador {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<OrdenVentaDTO> obtenerOrdenPorId(@PathVariable Long id) {
+        return ordenVentaServicio.obtenerOrdenPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+
     @PostMapping("/crear-temporal")
     public ResponseEntity<OrdenVentaDTO> crearOrdenTemporal() {
         OrdenVenta orden = ordenVentaServicio.crearOrdenTemporal(); // Retorna una orden vacía
