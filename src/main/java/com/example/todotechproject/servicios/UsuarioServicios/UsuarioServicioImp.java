@@ -1,11 +1,14 @@
 package com.example.todotechproject.servicios.UsuarioServicios;
 
+import com.example.todotechproject.dto.UsuarioDTO.CrearUsuarioDTO;
 import com.example.todotechproject.dto.UsuarioDTO.UsuarioDTO;
+import com.example.todotechproject.dto.UsuarioDTO.UsuarioDTO2;
 import com.example.todotechproject.excepciones.UsuarioNoEncontradoException;
 import com.example.todotechproject.modelo.entidades.Usuario;
 import com.example.todotechproject.modelo.enums.TipoUsuario;
 
 import com.example.todotechproject.repositorios.UsuarioRepo;
+import com.example.todotechproject.utils.Mappers.Usuarios.UsuarioMapper2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,11 +25,27 @@ public class UsuarioServicioImp implements UsuarioServicio {
 
     @Override
     public void crearUsuario(Usuario usuario) throws Exception {
-        if (usuarioRepo.existsById(usuario.getUsuario())) {
+        if (usuarioRepo.findByUsuario(usuario.getUsuario()).isPresent()) {
             throw new Exception("El usuario ya existe");
         }
         usuarioRepo.save(usuario);
     }
+
+    @Override
+    public void crearUsuario2(Usuario usuario) throws Exception {
+        if (usuarioRepo.findByUsuario(usuario.getUsuario()).isPresent()) {
+            throw new Exception("El usuario ya existe");
+        }
+        usuarioRepo.save(usuario);
+    }
+
+    @Override
+    public void crearUsuarioPaquete(CrearUsuarioDTO crearUsuarioDTO) throws Exception {
+
+        UsuarioDTO2 usuarioDTO2=new UsuarioDTO2(crearUsuarioDTO.usuario(),crearUsuarioDTO.password(),crearUsuarioDTO.tipoUsuario());
+
+    }
+
 
     @Override
     public void actualizarUsuario(Usuario usuario) throws Exception {
@@ -86,5 +105,11 @@ public class UsuarioServicioImp implements UsuarioServicio {
     @Override
     public void eliminarUsuario(String usuario) {
         usuarioRepo.deleteById(usuario);
+    }
+
+
+    @Override
+    public Usuario obtenerUltimoUsuarioCreado() {
+        return usuarioRepo.findTopByOrderByIdDesc().orElse(null);
     }
 }

@@ -1,4 +1,7 @@
 package com.example.todotechproject.dto;
 
-public class CajeroDTO {
+import com.example.todotechproject.modelo.entidades.Usuario;
+
+public record CajeroDTO (String nombre, String correo, String telefono,
+                            Usuario usuario){
 }

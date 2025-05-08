@@ -1,4 +1,4 @@
-package com.example.todotechproject.utils.Mappers;
+package com.example.todotechproject.utils.Mappers.Usuarios;
 
 import com.example.todotechproject.dto.UsuarioDTO.UsuarioDTO;
 import com.example.todotechproject.modelo.entidades.Usuario;

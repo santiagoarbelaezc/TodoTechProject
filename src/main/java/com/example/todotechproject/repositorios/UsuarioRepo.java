@@ -11,4 +11,8 @@ public interface UsuarioRepo extends JpaRepository<Usuario, String> {
     List<Usuario> findByTipoUsuario(TipoUsuario tipoUsuario);
     Optional<Usuario> findByUsuario(String usuario);
 
+    // UsuarioRepo.java
+    Optional<Usuario> findTopByOrderByIdDesc();
+
+
 }
