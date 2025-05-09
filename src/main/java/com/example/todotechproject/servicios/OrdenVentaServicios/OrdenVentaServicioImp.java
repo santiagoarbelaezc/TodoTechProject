@@ -12,11 +12,13 @@ import com.example.todotechproject.servicios.VendedorServicios.VendedorServicio;
 import com.example.todotechproject.utils.Mappers.OrdenVentaMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.example.todotechproject.modelo.entidades.DetalleOrden;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OrdenVentaServicioImp implements OrdenVentaServicio {
@@ -92,6 +94,33 @@ public class OrdenVentaServicioImp implements OrdenVentaServicio {
                     return OrdenVentaMapper.toDTO(orden);
                 });
     }
+
+    @Override
+    public List<OrdenVentaDTO> obtenerTodasLasOrdenes() {
+        List<OrdenVenta> ordenes = ordenVentaRepo.findAll();
+        return ordenes.stream()
+                .map(ordenVenta -> {
+                    // Calcular el total de la orden
+                    Double total = ordenVenta.getProductos().stream()
+                            .mapToDouble(DetalleOrden::getSubtotal) // Obtener el subtotal de cada producto
+                            .sum(); // Sumar todos los subtotales
+
+                    // Convertir la orden de venta a DTO y setear el total
+                    OrdenVentaDTO dto = OrdenVentaMapper.toDTO(ordenVenta);
+                    return new OrdenVentaDTO(
+                            dto.id(),
+                            dto.fecha(),
+                            dto.cliente(),
+                            dto.vendedor(),
+                            dto.productos(),
+                            dto.estado(),
+                            total // Establecer el total calculado
+                    );
+                })
+                .collect(Collectors.toList());
+    }
+
+
 
 
 }

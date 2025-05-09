@@ -1,10 +1,15 @@
 package com.example.todotechproject.modelo.entidades;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+
+
 @Entity
 @Table(name = "detalle_orden")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class DetalleOrden {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "detalle_orden_seq")

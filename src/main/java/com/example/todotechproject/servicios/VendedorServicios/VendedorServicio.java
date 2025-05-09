@@ -1,5 +1,6 @@
 package com.example.todotechproject.servicios.VendedorServicios;
 
+import com.example.todotechproject.dto.Reporte.ReporteRendimientoDTO;
 import com.example.todotechproject.dto.VendedorDTO;
 import com.example.todotechproject.modelo.entidades.*;
 import com.example.todotechproject.modelo.enums.EstadoOrden;
@@ -43,4 +44,6 @@ public interface VendedorServicio {
     Vendedor buscarVendedorPorId(Long id);
 
     List<VendedorDTO> listarVendedores();
+
+    List<ReporteRendimientoDTO> obtenerReporteRendimiento();
 }

@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static com.example.todotechproject.utils.Mappers.OrdenVentaMapper.toDTO;
 
 @RestController
@@ -48,4 +50,16 @@ public class OrdenVentaControlador {
         OrdenVenta orden = ordenVentaServicio.crearOrdenTemporal(); // Retorna una orden vacía
         return ResponseEntity.ok(toDTO(orden));
     }
+
+    @GetMapping("/obtenerTodos")
+    public ResponseEntity<List<OrdenVentaDTO>> obtenerTodasLasOrdenes() {
+        List<OrdenVentaDTO> ordenes = ordenVentaServicio.obtenerTodasLasOrdenes();
+        if (ordenes.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(ordenes);
+        }
+    }
+
+
 }

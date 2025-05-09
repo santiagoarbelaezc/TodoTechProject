@@ -53,6 +53,7 @@ public class ProductoServicioImp implements ProductoServicio {
                 .collect(Collectors.toList());
     }
 
+
     @Override
     public List<ProductoDTO> buscarPorCategoria(String categoria) {
         return productoRepo.findByCategoriaNombre(categoria).stream()

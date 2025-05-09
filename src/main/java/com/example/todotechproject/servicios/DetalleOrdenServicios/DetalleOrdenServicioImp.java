@@ -33,9 +33,11 @@ public class DetalleOrdenServicioImp implements DetalleOrdenServicio {
 
     @Override
     public DetalleOrdenDTO crearDetalle(ProductoDTO productoDTO, Long ordenVentaId) {
+        // Recuperamos el producto desde la base de datos
         Producto producto = productoRepo.findById(productoDTO.getId())
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
 
+        // Recuperamos la orden de venta
         OrdenVenta orden = ordenVentaRepo.findById(ordenVentaId)
                 .orElseThrow(() -> new RuntimeException("Orden de venta no encontrada"));
 
@@ -50,10 +52,14 @@ public class DetalleOrdenServicioImp implements DetalleOrdenServicio {
             detalleExistente.setCantidad(nuevaCantidad);
             detalleExistente.setSubtotal(producto.getPrecio() * nuevaCantidad);
             DetalleOrden actualizado = detalleOrdenRepo.save(detalleExistente);
+
+            // Actualizamos el total de la orden
+            actualizarTotalOrden(orden);
+
             return DetalleOrdenMapper.toDTO(actualizado);
         }
 
-        // Si no existe, creamos uno nuevo
+        // Si no existe, creamos un detalle nuevo
         DetalleOrden nuevoDetalle = new DetalleOrden();
         nuevoDetalle.setProducto(producto);
         nuevoDetalle.setCantidad(1);
@@ -61,8 +67,26 @@ public class DetalleOrdenServicioImp implements DetalleOrdenServicio {
         nuevoDetalle.setOrdenVenta(orden);
 
         DetalleOrden guardado = detalleOrdenRepo.save(nuevoDetalle);
+
+        // Actualizamos el total de la orden
+        actualizarTotalOrden(orden);
+
         return DetalleOrdenMapper.toDTO(guardado);
     }
+
+    private void actualizarTotalOrden(OrdenVenta orden) {
+        // Calculamos el nuevo total sumando los subtotales de todos los detalles de la orden
+        Double nuevoTotal = orden.getProductos().stream()
+                .mapToDouble(DetalleOrden::getSubtotal)
+                .sum();
+
+        // Actualizamos el total de la orden
+        orden.setTotal(nuevoTotal);
+
+        // Guardamos la orden con el nuevo total
+        ordenVentaRepo.save(orden);
+    }
+
 
 
     public ResponseEntity<DetalleOrdenDTO> crear(CrearDetalleRequest request) {
@@ -124,33 +148,59 @@ public class DetalleOrdenServicioImp implements DetalleOrdenServicio {
 
     @Override
     public ResponseEntity<DetalleOrdenDTO> aumentarCantidad(Long productoId, Long ordenVentaId) {
+        // Obtener el detalle de la orden
         DetalleOrden detalle = detalleOrdenRepo.findByProductoIdAndOrdenVentaId(productoId, ordenVentaId)
                 .orElseThrow(() -> new RuntimeException("Detalle de orden no encontrado"));
 
+        // Incrementamos la cantidad y calculamos el nuevo subtotal
         int nuevaCantidad = detalle.getCantidad() + 1;
         detalle.setCantidad(nuevaCantidad);
         detalle.setSubtotal(detalle.getProducto().getPrecio() * nuevaCantidad);
 
+        // Guardamos el detalle actualizado
         DetalleOrden actualizado = detalleOrdenRepo.save(detalle);
+
+        // Obtenemos la ordenVenta por su ID
+        OrdenVenta ordenVenta = ordenVentaRepo.findById(ordenVentaId)
+                .orElseThrow(() -> new RuntimeException("Orden de venta no encontrada"));
+
+        // Actualizamos el total de la orden
+        actualizarTotalOrden(ordenVenta);
+
+        // Retornamos el DTO del detalle actualizado
         return ResponseEntity.ok(DetalleOrdenMapper.toDTO(actualizado));
     }
 
     @Override
     public ResponseEntity<DetalleOrdenDTO> disminuirCantidad(Long productoId, Long ordenVentaId) {
+        // Obtener el detalle de la orden
         DetalleOrden detalle = detalleOrdenRepo.findByProductoIdAndOrdenVentaId(productoId, ordenVentaId)
                 .orElseThrow(() -> new RuntimeException("Detalle de orden no encontrado"));
 
+        // Validamos que no sea menor a 1
         if (detalle.getCantidad() <= 1) {
-            return ResponseEntity.badRequest().body(null); // o podrías eliminar el detalle si la cantidad es 1
+            return ResponseEntity.badRequest().body(null); // Podrías eliminar el detalle si la cantidad es 1
         }
 
+        // Decrementamos la cantidad y calculamos el nuevo subtotal
         int nuevaCantidad = detalle.getCantidad() - 1;
         detalle.setCantidad(nuevaCantidad);
         detalle.setSubtotal(detalle.getProducto().getPrecio() * nuevaCantidad);
 
+        // Guardamos el detalle actualizado
         DetalleOrden actualizado = detalleOrdenRepo.save(detalle);
+
+        // Obtenemos la ordenVenta por su ID
+        OrdenVenta ordenVenta = ordenVentaRepo.findById(ordenVentaId)
+                .orElseThrow(() -> new RuntimeException("Orden de venta no encontrada"));
+
+        // Actualizamos el total de la orden
+        actualizarTotalOrden(ordenVenta);
+
+        // Retornamos el DTO del detalle actualizado
         return ResponseEntity.ok(DetalleOrdenMapper.toDTO(actualizado));
     }
+
 
 
 }

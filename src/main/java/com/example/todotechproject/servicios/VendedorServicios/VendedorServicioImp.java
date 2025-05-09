@@ -1,5 +1,7 @@
 package com.example.todotechproject.servicios.VendedorServicios;
 
+import com.example.todotechproject.dto.Reporte.ReporteRendimientoDTO;
+import com.example.todotechproject.dto.UsuarioDTO.UsuarioDTO;
 import com.example.todotechproject.dto.VendedorDTO;
 import com.example.todotechproject.modelo.entidades.*;
 import com.example.todotechproject.modelo.enums.EstadoOrden;
@@ -154,7 +156,56 @@ public class VendedorServicioImp implements VendedorServicio{
     public List<VendedorDTO> listarVendedores() {
         List<Vendedor> vendedores = vendedorRepo.findAll();
         return vendedores.stream()
-                .map(v -> new VendedorDTO(v.getNombre(), v.getCorreo(), v.getTelefono(), v.getUsuario()))
+                .map(v -> new VendedorDTO(
+                        v.getId(),
+                        v.getNombre(),
+                        v.getCorreo(),
+                        v.getTelefono(),
+                        new UsuarioDTO(
+                                v.getUsuario().getId(),
+                                v.getUsuario().getUsuario(),
+                                v.getUsuario().getPassword(),
+                                v.getUsuario().getTipoUsuario()
+                        )
+                ))
                 .collect(Collectors.toList());
     }
+
+
+    @Override
+    public List<ReporteRendimientoDTO> obtenerReporteRendimiento() {
+        // Obtenemos todos los vendedores
+        List<Vendedor> vendedores = vendedorRepo.findAll();
+
+        // Para cada vendedor, obtenemos las órdenes asociadas y sumamos el total de ventas
+        return vendedores.stream().map(vendedor -> {
+            // Obtenemos las órdenes de venta del vendedor
+            List<OrdenVenta> ordenes = ordenVentaRepo.findByVendedor(vendedor);
+
+            // Sumamos el total de ventas del vendedor
+            double totalVentas = ordenes.stream()
+                    .mapToDouble(orden -> orden.getProductos().stream()
+                            .mapToDouble(DetalleOrden::getSubtotal)
+                            .sum()) // Sumar los subtotales de los productos
+                    .sum();
+
+            // Creamos el DTO del vendedor
+            VendedorDTO vendedorDTO = new VendedorDTO(
+                    vendedor.getId(),
+                    vendedor.getNombre(),
+                    vendedor.getCorreo(),
+                    vendedor.getTelefono(),
+                    new UsuarioDTO(
+                            vendedor.getUsuario().getId(),
+                            vendedor.getUsuario().getUsuario(),
+                            vendedor.getUsuario().getPassword(),
+                            vendedor.getUsuario().getTipoUsuario()
+                    )
+            );
+
+            // Retornamos el ReporteRendimientoDTO
+            return new ReporteRendimientoDTO(vendedorDTO, totalVentas);
+        }).collect(Collectors.toList());
+    }
+
 }
