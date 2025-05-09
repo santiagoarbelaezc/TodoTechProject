@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/cajeros")
@@ -26,9 +28,11 @@ public class CajeroControlador {
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<String> crearCajero(@RequestBody CajeroDTO cajero) {
-        cajeroServicio.guardarCajero(cajero);
-        return ResponseEntity.ok("Cajero creado correctamente");
+    public ResponseEntity<Map<String, String>> crearCajero(@RequestBody CajeroDTO cajero) {
+        cajeroServicio.guardarCajero(cajero); // reutiliza guardar
+        Map<String, String> response = new HashMap<>();
+        response.put("mensaje", "Cajero creado correctamente");
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/actualizar")

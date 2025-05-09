@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/despachadores")
@@ -25,9 +27,11 @@ public class DespachadorControlador {
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<String> crearDespachador(@RequestBody DespachadorDTO despachador) {
-        despachadorServicio.guardarDespachador(despachador);
-        return ResponseEntity.ok("Despachador creado correctamente");
+    public ResponseEntity<Map<String, String>> crearDespachador(@RequestBody DespachadorDTO despachador) {
+        despachadorServicio.guardarDespachador(despachador); // reutiliza guardar
+        Map<String, String> response = new HashMap<>();
+        response.put("mensaje", "Despachador creado correctamente");
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/actualizar")

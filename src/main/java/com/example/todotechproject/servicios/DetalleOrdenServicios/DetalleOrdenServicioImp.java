@@ -56,6 +56,10 @@ public class DetalleOrdenServicioImp implements DetalleOrdenServicio {
             // Actualizamos el total de la orden
             actualizarTotalOrden(orden);
 
+            // Restamos el stock del producto
+            producto.setStock(producto.getStock() - 1);
+            productoRepo.save(producto); // Guardamos los cambios en el stock
+
             return DetalleOrdenMapper.toDTO(actualizado);
         }
 
@@ -71,8 +75,13 @@ public class DetalleOrdenServicioImp implements DetalleOrdenServicio {
         // Actualizamos el total de la orden
         actualizarTotalOrden(orden);
 
+        // Restamos el stock del producto
+        producto.setStock(producto.getStock() - 1);
+        productoRepo.save(producto); // Guardamos los cambios en el stock
+
         return DetalleOrdenMapper.toDTO(guardado);
     }
+
 
     private void actualizarTotalOrden(OrdenVenta orden) {
         // Calculamos el nuevo total sumando los subtotales de todos los detalles de la orden
@@ -103,7 +112,19 @@ public class DetalleOrdenServicioImp implements DetalleOrdenServicio {
         DetalleOrden detalle = detalleOrdenRepo.findByProductoIdAndOrdenVentaId(productoId, ordenVentaId)
                 .orElseThrow(() -> new RuntimeException("Detalle de orden no encontrado"));
 
+        // Restaurar el stock del producto
+        Producto producto = detalle.getProducto();
+        int cantidadADevolver = detalle.getCantidad();
+        producto.setStock(producto.getStock() + cantidadADevolver);
+        productoRepo.save(producto); // Guardamos los cambios en el stock
+
+        // Eliminar el detalle
         detalleOrdenRepo.delete(detalle);
+
+        // Actualizar el total de la orden
+        OrdenVenta orden = detalle.getOrdenVenta();
+        actualizarTotalOrden(orden);
+
         return true;
     }
 
@@ -157,6 +178,15 @@ public class DetalleOrdenServicioImp implements DetalleOrdenServicio {
         detalle.setCantidad(nuevaCantidad);
         detalle.setSubtotal(detalle.getProducto().getPrecio() * nuevaCantidad);
 
+        // Actualizamos el stock del producto
+        Producto producto = detalle.getProducto();
+        if (producto.getStock() > 0) {
+            producto.setStock(producto.getStock() - 1); // Restamos 1 al stock del producto
+            productoRepo.save(producto); // Guardamos los cambios en el producto
+        } else {
+            return ResponseEntity.badRequest().body(null); // Si el stock es 0, no podemos aumentar la cantidad
+        }
+
         // Guardamos el detalle actualizado
         DetalleOrden actualizado = detalleOrdenRepo.save(detalle);
 
@@ -187,6 +217,11 @@ public class DetalleOrdenServicioImp implements DetalleOrdenServicio {
         detalle.setCantidad(nuevaCantidad);
         detalle.setSubtotal(detalle.getProducto().getPrecio() * nuevaCantidad);
 
+        // Actualizamos el stock del producto
+        Producto producto = detalle.getProducto();
+        producto.setStock(producto.getStock() + 1); // Aumentamos 1 al stock del producto
+        productoRepo.save(producto); // Guardamos los cambios en el producto
+
         // Guardamos el detalle actualizado
         DetalleOrden actualizado = detalleOrdenRepo.save(detalle);
 
@@ -200,6 +235,7 @@ public class DetalleOrdenServicioImp implements DetalleOrdenServicio {
         // Retornamos el DTO del detalle actualizado
         return ResponseEntity.ok(DetalleOrdenMapper.toDTO(actualizado));
     }
+
 
 
 
