@@ -5,11 +5,8 @@ import com.example.todotechproject.dto.UsuarioDTO.UsuarioDTO;
 import com.example.todotechproject.dto.VendedorDTO;
 import com.example.todotechproject.modelo.entidades.*;
 import com.example.todotechproject.modelo.enums.EstadoOrden;
-import com.example.todotechproject.repositorios.ClienteRepo;
-import com.example.todotechproject.repositorios.DetalleOrdenRepo;
-import com.example.todotechproject.repositorios.OrdenVentaRepo;
-import com.example.todotechproject.repositorios.ProductoRepo;
-import com.example.todotechproject.repositorios.VendedorRepo;
+import com.example.todotechproject.repositorios.*;
+import com.example.todotechproject.utils.Mappers.VendedorMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +19,8 @@ import java.util.stream.Collectors;
 
 public class VendedorServicioImp implements VendedorServicio{
 
+    @Autowired
+    private UsuarioRepo usuarioRepo;
 
     @Autowired
     private VendedorRepo vendedorRepo;
@@ -30,14 +29,31 @@ public class VendedorServicioImp implements VendedorServicio{
     private OrdenVentaRepo ordenVentaRepo;
 
     @Autowired
-    private DetalleOrdenRepo detalleOrdenRepo;
-    @Autowired
     private ProductoRepo productoRepo;
 
     @Autowired
     private ClienteRepo clienteRepo;
 
+    @Autowired
+    private VendedorMapper vendedorMapper;
 
+    @Override
+    public void crearVendedor(VendedorDTO vendedorDTO) {
+        // Recuperar el usuario por su nombre de usuario (o ID si lo manejas así)
+        Optional<Usuario> usuarioOptional = usuarioRepo.findByUsuario(vendedorDTO.usuario().usuario());
+
+        if (usuarioOptional.isPresent()) {
+            Usuario usuario = usuarioOptional.get();
+
+            // Mapear DTO a entidad
+            Vendedor vendedor = vendedorMapper.vendedorDTOToVendedor(vendedorDTO);
+            vendedor.setUsuario(usuario); // Aquí se asegura que el usuario es persistente
+
+            vendedorRepo.save(vendedor);
+        } else {
+            throw new RuntimeException("El usuario asociado no fue encontrado");
+        }
+    }
 
     @Override
     public OrdenVenta crearOrdenVenta(LocalDateTime fecha, Cliente cliente, Vendedor vendedor) throws Exception {
@@ -177,35 +193,41 @@ public class VendedorServicioImp implements VendedorServicio{
         // Obtenemos todos los vendedores
         List<Vendedor> vendedores = vendedorRepo.findAll();
 
-        // Para cada vendedor, obtenemos las órdenes asociadas y sumamos el total de ventas
-        return vendedores.stream().map(vendedor -> {
-            // Obtenemos las órdenes de venta del vendedor
-            List<OrdenVenta> ordenes = ordenVentaRepo.findByVendedor(vendedor);
+        // Generamos y ordenamos los ReporteRendimientoDTO por totalVentas descendente
+        return vendedores.stream()
+                .map(vendedor -> {
+                    // Obtenemos las órdenes de venta del vendedor
+                    List<OrdenVenta> ordenes = ordenVentaRepo.findByVendedor(vendedor);
 
-            // Sumamos el total de ventas del vendedor
-            double totalVentas = ordenes.stream()
-                    .mapToDouble(orden -> orden.getProductos().stream()
-                            .mapToDouble(DetalleOrden::getSubtotal)
-                            .sum()) // Sumar los subtotales de los productos
-                    .sum();
+                    // Sumamos el total de ventas del vendedor
+                    double totalVentas = ordenes.stream()
+                            .mapToDouble(orden -> orden.getProductos().stream()
+                                    .mapToDouble(DetalleOrden::getSubtotal)
+                                    .sum())
+                            .sum();
 
-            // Creamos el DTO del vendedor
-            VendedorDTO vendedorDTO = new VendedorDTO(
-                    vendedor.getId(),
-                    vendedor.getNombre(),
-                    vendedor.getCorreo(),
-                    vendedor.getTelefono(),
-                    new UsuarioDTO(
-                            vendedor.getUsuario().getId(),
-                            vendedor.getUsuario().getUsuario(),
-                            vendedor.getUsuario().getPassword(),
-                            vendedor.getUsuario().getTipoUsuario()
-                    )
-            );
+                    // Creamos el DTO del vendedor
+                    VendedorDTO vendedorDTO = new VendedorDTO(
+                            vendedor.getId(),
+                            vendedor.getNombre(),
+                            vendedor.getCorreo(),
+                            vendedor.getTelefono(),
+                            new UsuarioDTO(
+                                    vendedor.getUsuario().getId(),
+                                    vendedor.getUsuario().getUsuario(),
+                                    vendedor.getUsuario().getPassword(),
+                                    vendedor.getUsuario().getTipoUsuario()
+                            )
+                    );
 
-            // Retornamos el ReporteRendimientoDTO
-            return new ReporteRendimientoDTO(vendedorDTO, totalVentas);
-        }).collect(Collectors.toList());
+                    return new ReporteRendimientoDTO(vendedorDTO, totalVentas);
+                })
+                // Ordenamos por totalVentas descendente
+                .sorted((r1, r2) -> Double.compare(r2.totalVentas(), r1.totalVentas()))
+                .collect(Collectors.toList());
     }
+
+
+
 
 }

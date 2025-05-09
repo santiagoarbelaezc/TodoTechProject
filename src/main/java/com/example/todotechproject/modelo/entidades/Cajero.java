@@ -1,10 +1,17 @@
 package com.example.todotechproject.modelo.entidades;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "cajero")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Cajero {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cajero_seq")

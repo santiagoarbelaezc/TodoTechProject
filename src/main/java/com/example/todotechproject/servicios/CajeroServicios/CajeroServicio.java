@@ -1,11 +1,24 @@
 package com.example.todotechproject.servicios.CajeroServicios;
 
+import com.example.todotechproject.dto.CajeroDTO;
+import com.example.todotechproject.modelo.entidades.Cajero;
 import com.example.todotechproject.modelo.entidades.OrdenVenta;
 import com.example.todotechproject.modelo.enums.MedioPago;
 
 import java.util.List;
 
 public interface CajeroServicio {
+
+
+
+    void guardarCajero(CajeroDTO cajero);
+
+
+    void actualizarCajero(Cajero cajero);
+
+    void eliminarCajero(Long id);
+
+    List<CajeroDTO> listarCajeros();
 
     OrdenVenta buscarOrdenVenta(Long ordenId) throws Exception;
 

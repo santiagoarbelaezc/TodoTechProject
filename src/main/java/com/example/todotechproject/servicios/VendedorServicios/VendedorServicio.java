@@ -46,4 +46,6 @@ public interface VendedorServicio {
     List<VendedorDTO> listarVendedores();
 
     List<ReporteRendimientoDTO> obtenerReporteRendimiento();
+
+    void crearVendedor(VendedorDTO vendedor);
 }
