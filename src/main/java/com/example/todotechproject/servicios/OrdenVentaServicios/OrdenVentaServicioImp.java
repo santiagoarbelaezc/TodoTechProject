@@ -63,12 +63,26 @@ public class OrdenVentaServicioImp implements OrdenVentaServicio {
         ultimaOrden.getCliente().getNombre();
         ultimaOrden.getVendedor().getNombre();
         ultimaOrden.getProductos().forEach(p -> {
-            p.getProducto().getId(); // Carga producto asociado
-            p.getOrdenVenta().getId(); // Puede que no lo necesites
+            p.getProducto().getId();
         });
 
-        return OrdenVentaMapper.toDTO(ultimaOrden);
+        // ⚠️ Calcular total manualmente
+        Double total = ultimaOrden.getProductos().stream()
+                .mapToDouble(p -> p.getSubtotal() != null ? p.getSubtotal() : 0.0)
+                .sum();
+
+        OrdenVentaDTO dto = OrdenVentaMapper.toDTO(ultimaOrden);
+        return new OrdenVentaDTO(
+                dto.id(),
+                dto.fecha(),
+                dto.cliente(),
+                dto.vendedor(),
+                dto.productos(),
+                dto.estado(),
+                total // ← total recalculado
+        );
     }
+
 
     @Override
     public OrdenVenta crearOrdenTemporal() {
