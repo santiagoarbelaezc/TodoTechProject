@@ -15,6 +15,9 @@ public class PagoServicioImp implements PagoServicio {
 
     @Override
     public void crearPago(Pago pago) {
+        if (pago.getOrden() == null || pago.getOrden().getId() == null) {
+            throw new IllegalArgumentException("La orden asociada al pago no es válida");
+        }
         pagoRepo.save(pago);
     }
 

@@ -1,6 +1,7 @@
 package com.example.todotechproject.dto.Pago;
 
-import com.example.todotechproject.dto.OrdenVenta.OrdenVentaDTO;
-
-public record CrearPagoDTO(OrdenVentaDTO ordenVentaDTO, double monto, String metodoPago) {
-}
+public record CrearPagoDTO(
+        Long ordenId,  // Cambiamos de OrdenVentaDTO a solo el ID
+        double monto,
+        String metodoPago
+) {}
