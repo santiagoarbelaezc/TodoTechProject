@@ -105,5 +105,18 @@ public class ProductoControlador {
         }
     }
 
+    @DeleteMapping("/eliminar/{id}")
+    public ResponseEntity<?> eliminarProducto(@PathVariable Long id) {
+        try {
+            productoServicio.eliminarProducto(id);
+            return ResponseEntity.ok(Map.of("mensaje", "Producto eliminado con éxito"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Error al eliminar el producto: " + e.getMessage()));
+        }
+    }
+
 
 }

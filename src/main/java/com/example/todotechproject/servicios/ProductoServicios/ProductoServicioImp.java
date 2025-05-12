@@ -84,6 +84,14 @@ public class ProductoServicioImp implements ProductoServicio {
     }
 
     @Override
+    public void eliminarProducto(Long id) {
+        if (!productoRepo.existsById(id)) {
+            throw new IllegalArgumentException("Producto no encontrado con ID: " + id);
+        }
+        productoRepo.deleteById(id);
+    }
+
+    @Override
     public ProductoDTO crearProducto(ProductoDTO productoDTO) {
         Producto producto = new Producto();
         producto.setNombre(productoDTO.getNombre());

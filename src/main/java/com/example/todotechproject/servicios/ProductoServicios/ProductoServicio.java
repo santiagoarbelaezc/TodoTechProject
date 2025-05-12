@@ -23,4 +23,6 @@ public interface ProductoServicio {
     List<ProductoDTO> obtenerProductosHp();
 
     List<ProductoDTO> obtenerProductosSamsung();
+
+    void eliminarProducto(Long id);
 }

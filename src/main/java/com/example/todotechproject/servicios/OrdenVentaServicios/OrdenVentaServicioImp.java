@@ -2,10 +2,12 @@ package com.example.todotechproject.servicios.OrdenVentaServicios;
 
 import com.example.todotechproject.dto.OrdenVenta.CrearOrdenDTO;
 import com.example.todotechproject.dto.OrdenVenta.OrdenVentaDTO;
+import com.example.todotechproject.dto.OrdenVenta.OrdenVentaDescuentoRequest;
 import com.example.todotechproject.modelo.entidades.OrdenVenta;
 import com.example.todotechproject.modelo.entidades.Usuario;
 import com.example.todotechproject.modelo.entidades.Vendedor;
 import com.example.todotechproject.modelo.enums.EstadoOrden;
+import com.example.todotechproject.repositorios.DetalleOrdenRepo;
 import com.example.todotechproject.repositorios.OrdenVentaRepo;
 import com.example.todotechproject.servicios.UsuarioServicios.UsuarioServicio;
 import com.example.todotechproject.servicios.VendedorServicios.VendedorServicio;
@@ -31,6 +33,9 @@ public class OrdenVentaServicioImp implements OrdenVentaServicio {
 
     @Autowired
     private OrdenVentaRepo ordenVentaRepo;
+
+    @Autowired
+    private DetalleOrdenRepo detalleOrdenRepo;
 
 
     @Override
@@ -110,6 +115,65 @@ public class OrdenVentaServicioImp implements OrdenVentaServicio {
     }
 
     @Override
+    public OrdenVentaDescuentoRequest aplicarDescuento(Long ordenVentaId, Double porcentajeDescuento) {
+        if (porcentajeDescuento <= 0 || porcentajeDescuento > 100) {
+            throw new IllegalArgumentException("El porcentaje de descuento debe estar entre 0 y 100");
+        }
+
+        OrdenVenta orden = ordenVentaRepo.findById(ordenVentaId)
+                .orElseThrow(() -> new RuntimeException("Orden de venta no encontrada"));
+
+        // Verificar que la orden no tenga productos ya con descuento
+        if (orden.getProductos().stream().anyMatch(d -> d.getSubtotal() <
+                (d.getProducto().getPrecio() * d.getCantidad()))) {
+            throw new IllegalStateException("Ya se ha aplicado un descuento a esta orden");
+        }
+
+        // Calcular el factor de descuento
+        double factorDescuento = 1 - (porcentajeDescuento / 100);
+
+        // Aplicar descuento a cada detalle de la orden
+        for (DetalleOrden detalle : orden.getProductos()) {
+            double precioOriginal = detalle.getProducto().getPrecio() * detalle.getCantidad();
+            double nuevoSubtotal = precioOriginal * factorDescuento;
+            detalle.setSubtotal(nuevoSubtotal);
+            detalleOrdenRepo.save(detalle);
+        }
+
+        // Actualizar el total de la orden
+        actualizarTotalOrden(orden);
+
+        // Convertir a DTO y devolver
+        OrdenVentaDTO dto = OrdenVentaMapper.toDTO(orden);
+
+        // Incluimos el porcentaje de descuento en la respuesta aunque no lo guardemos en BD
+        return new OrdenVentaDescuentoRequest(
+                dto.id(),
+                dto.fecha(),
+                dto.cliente(),
+                dto.vendedor(),
+                dto.productos(),
+                dto.estado(),
+                dto.total(),
+                porcentajeDescuento
+                // Lo pasamos en el DTO aunque no se persista
+        );
+    }
+
+    private void actualizarTotalOrden(OrdenVenta orden) {
+        // Calculamos el nuevo total sumando los subtotales de todos los detalles de la orden
+        Double nuevoTotal = orden.getProductos().stream()
+                .mapToDouble(DetalleOrden::getSubtotal)
+                .sum();
+
+        // Actualizamos el total de la orden
+        orden.setTotal(nuevoTotal);
+
+        // Guardamos la orden con el nuevo total
+        ordenVentaRepo.save(orden);
+    }
+
+    @Override
     public List<OrdenVentaDTO> obtenerTodasLasOrdenes() {
         List<OrdenVenta> ordenes = ordenVentaRepo.findAll();
         return ordenes.stream()
@@ -132,6 +196,23 @@ public class OrdenVentaServicioImp implements OrdenVentaServicio {
                     );
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public OrdenVentaDTO removerDescuento(Long ordenVentaId) {
+        OrdenVenta orden = ordenVentaRepo.findById(ordenVentaId)
+                .orElseThrow(() -> new RuntimeException("Orden de venta no encontrada"));
+
+        // Restaurar precios originales
+        for (DetalleOrden detalle : orden.getProductos()) {
+            double precioOriginal = detalle.getProducto().getPrecio() * detalle.getCantidad();
+            detalle.setSubtotal(precioOriginal);
+            detalleOrdenRepo.save(detalle);
+        }
+
+        actualizarTotalOrden(orden);
+
+        return OrdenVentaMapper.toDTO(orden);
     }
 
 

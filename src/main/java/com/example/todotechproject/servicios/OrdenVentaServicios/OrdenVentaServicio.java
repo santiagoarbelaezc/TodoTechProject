@@ -2,6 +2,7 @@ package com.example.todotechproject.servicios.OrdenVentaServicios;
 
 import com.example.todotechproject.dto.OrdenVenta.CrearOrdenDTO;
 import com.example.todotechproject.dto.OrdenVenta.OrdenVentaDTO;
+import com.example.todotechproject.dto.OrdenVenta.OrdenVentaDescuentoRequest;
 import com.example.todotechproject.modelo.entidades.OrdenVenta;
 
 import java.util.List;
@@ -15,8 +16,9 @@ public interface OrdenVentaServicio {
     OrdenVentaDTO obtenerUltimaOrden();
 
     Optional<OrdenVentaDTO> obtenerOrdenPorId(Long id);
-
-
+    //SERVICIOS PARA EL DESCUENTO
+    OrdenVentaDescuentoRequest aplicarDescuento(Long ordenVentaId, Double porcentajeDescuento);
+    OrdenVentaDTO removerDescuento(Long ordenVentaId);
 
     OrdenVenta crearOrdenTemporal();
 
