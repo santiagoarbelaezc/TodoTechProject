@@ -1,6 +1,7 @@
 package com.example.todotechproject.servicios.ProductoServicios;
 
 import com.example.todotechproject.dto.ProductoDTO;
+import com.example.todotechproject.dto.ProductoReporteRequest;
 
 import java.util.List;
 
@@ -25,4 +26,6 @@ public interface ProductoServicio {
     List<ProductoDTO> obtenerProductosSamsung();
 
     void eliminarProducto(Long id);
+
+    List<ProductoReporteRequest> obtenerReporteVentasPorProducto();
 }

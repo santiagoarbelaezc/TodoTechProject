@@ -216,6 +216,29 @@ public class OrdenVentaServicioImp implements OrdenVentaServicio {
     }
 
 
+    @Override
+    public List<OrdenVentaDTO> listarOrdenesPorFecha() {
+        return ordenVentaRepo.findAllByOrderByFechaAsc().stream()
+                .map(OrdenVentaMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OrdenVentaDTO> listarOrdenesPorValor() {
+        return ordenVentaRepo.findAllByOrderByTotalDesc().stream()
+                .map(OrdenVentaMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OrdenVentaDTO> listarOrdenesPorEstado(EstadoOrden estado) {
+        return ordenVentaRepo.findByEstado(estado).stream()
+                .map(OrdenVentaMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+
+
 
 
 }

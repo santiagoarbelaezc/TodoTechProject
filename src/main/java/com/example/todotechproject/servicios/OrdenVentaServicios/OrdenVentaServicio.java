@@ -4,6 +4,7 @@ import com.example.todotechproject.dto.OrdenVenta.CrearOrdenDTO;
 import com.example.todotechproject.dto.OrdenVenta.OrdenVentaDTO;
 import com.example.todotechproject.dto.OrdenVenta.OrdenVentaDescuentoRequest;
 import com.example.todotechproject.modelo.entidades.OrdenVenta;
+import com.example.todotechproject.modelo.enums.EstadoOrden;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,4 +24,9 @@ public interface OrdenVentaServicio {
     OrdenVenta crearOrdenTemporal();
 
     List<OrdenVentaDTO> obtenerTodasLasOrdenes();
+
+    List<OrdenVentaDTO> listarOrdenesPorFecha();
+    List<OrdenVentaDTO> listarOrdenesPorValor();
+    List<OrdenVentaDTO> listarOrdenesPorEstado(EstadoOrden estado);
+
 }

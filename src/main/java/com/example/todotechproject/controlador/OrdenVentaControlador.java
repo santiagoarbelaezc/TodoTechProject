@@ -3,6 +3,7 @@ package com.example.todotechproject.controlador;
 import com.example.todotechproject.dto.OrdenVenta.CrearOrdenDTO;
 import com.example.todotechproject.dto.OrdenVenta.OrdenVentaDTO;
 import com.example.todotechproject.modelo.entidades.OrdenVenta;
+import com.example.todotechproject.modelo.enums.EstadoOrden;
 import com.example.todotechproject.servicios.OrdenVentaServicios.OrdenVentaServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -60,6 +61,22 @@ public class OrdenVentaControlador {
             return ResponseEntity.ok(ordenes);
         }
     }
+
+    @GetMapping("/por-fecha")
+    public ResponseEntity<List<OrdenVentaDTO>> obtenerOrdenesPorFecha() {
+        return ResponseEntity.ok(ordenVentaServicio.listarOrdenesPorFecha());
+    }
+
+    @GetMapping("/por-valor")
+    public ResponseEntity<List<OrdenVentaDTO>> obtenerOrdenesPorValor() {
+        return ResponseEntity.ok(ordenVentaServicio.listarOrdenesPorValor());
+    }
+
+    @GetMapping("/estado/{estado}")
+    public ResponseEntity<List<OrdenVentaDTO>> obtenerOrdenesPorEstado(@PathVariable EstadoOrden estado) {
+        return ResponseEntity.ok(ordenVentaServicio.listarOrdenesPorEstado(estado));
+    }
+
 
 
 }

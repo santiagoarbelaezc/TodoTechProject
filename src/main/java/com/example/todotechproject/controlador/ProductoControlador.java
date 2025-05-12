@@ -1,6 +1,7 @@
 package com.example.todotechproject.controlador;
 
 import com.example.todotechproject.dto.ProductoDTO;
+import com.example.todotechproject.dto.ProductoReporteRequest;
 import com.example.todotechproject.servicios.ProductoServicios.ProductoServicio;
 import org.springframework.web.bind.annotation.*;
 
@@ -116,6 +117,12 @@ public class ProductoControlador {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error al eliminar el producto: " + e.getMessage()));
         }
+    }
+
+    @GetMapping("/reporte/ventas")
+    public ResponseEntity<List<ProductoReporteRequest>> obtenerReporteVentas() {
+        List<ProductoReporteRequest> reporte = productoServicio.obtenerReporteVentasPorProducto();
+        return ResponseEntity.ok(reporte);
     }
 
 
