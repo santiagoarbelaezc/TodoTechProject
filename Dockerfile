@@ -1,24 +1,16 @@
-# Base image with OpenJDK 17 and Gradle to build
-FROM gradle:7.6.1-jdk17 AS builder
-
-WORKDIR /app
-
-# Copy the entire project to the container
-COPY . .
-
-# Build the project with Gradle (without a daemon)
-RUN gradle build --no-daemon
-
-# Lightweight image with only Java to run the .jar
-FROM openjdk:17-jdk-slim
-
-WORKDIR /app
-
-# Copy the .jar file from the builder stage
-COPY --from=builder /app/build/libs/TodoTechProject-0.0.1-SNAPSHOT.jar .
-
-# Expose port 8080
-EXPOSE 8080
-
-# Command to run the app
-CMD ["java", "-jar", "TodoTechProject-0.0.1-SNAPSHOT.jar"]
+#
+# Build stage
+#
+FROM gradle:latest AS build
+COPY --chown=gradle:gradle . /home/gradle/src
+WORKDIR /home/gradle/src
+RUN gradle clean
+RUN gradle bootJar
+#
+# Package stage
+#
+FROM openjdk:21
+ARG JAR_FILE=build/libs/*.jar
+COPY --from=build /home/gradle/src/build/libs/*.jar app.jar
+EXPOSE ${PORT}
+ENTRYPOINT ["java","-jar","/app.jar"]
