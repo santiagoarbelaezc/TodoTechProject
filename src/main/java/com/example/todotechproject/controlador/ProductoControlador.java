@@ -125,5 +125,21 @@ public class ProductoControlador {
         return ResponseEntity.ok(reporte);
     }
 
+    @PutMapping("/actualizar/{id}")
+    public ResponseEntity<?> actualizarProducto(@PathVariable Long id, @RequestBody ProductoDTO productoDTO) {
+        try {
+            ProductoDTO productoActualizado = productoServicio.actualizarProducto(id, productoDTO);
+            return ResponseEntity.ok(Map.of(
+                    "mensaje", "Producto actualizado con éxito",
+                    "producto", productoActualizado
+            ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Error al actualizar el producto: " + e.getMessage()));
+        }
+    }
+
 
 }

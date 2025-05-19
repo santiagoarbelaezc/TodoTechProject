@@ -28,4 +28,6 @@ public interface ProductoServicio {
     void eliminarProducto(Long id);
 
     List<ProductoReporteRequest> obtenerReporteVentasPorProducto();
+
+    ProductoDTO actualizarProducto(Long id, ProductoDTO productoDTO);
 }

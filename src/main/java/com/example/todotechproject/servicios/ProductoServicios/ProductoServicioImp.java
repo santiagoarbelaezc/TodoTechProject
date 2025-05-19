@@ -146,6 +146,31 @@ public class ProductoServicioImp implements ProductoServicio {
         return new ArrayList<>(reporteMap.values());
     }
 
+    @Override
+    public ProductoDTO actualizarProducto(Long id, ProductoDTO productoDTO) {
+        Producto productoExistente = productoRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con ID: " + id));
+
+        // Actualizar campos
+        productoExistente.setNombre(productoDTO.getNombre());
+        productoExistente.setCodigo(productoDTO.getCodigo());
+        productoExistente.setDescripcion(productoDTO.getDescripcion());
+        productoExistente.setPrecio(productoDTO.getPrecio());
+        productoExistente.setStock(productoDTO.getStock());
+        productoExistente.setImagen(productoDTO.getImagen());
+
+        // Actualizar categoría si es necesario
+        if (!productoExistente.getCategoria().getNombre().equals(productoDTO.getCategoria())) {
+            Categoria nuevaCategoria = categoriaRepo.findCategoriaByNombre(productoDTO.getCategoria());
+            if (nuevaCategoria == null) {
+                throw new IllegalArgumentException("Categoría no encontrada: " + productoDTO.getCategoria());
+            }
+            productoExistente.setCategoria(nuevaCategoria);
+        }
+
+        productoExistente = productoRepo.save(productoExistente);
+        return ProductoMapper.toDTO(productoExistente);
+    }
 
 
 }
