@@ -41,4 +41,6 @@ public interface CajeroServicio {
 
 
     Trabajador buscarCajeroPorId(Long id);
+
+    TrabajadorDTO obtenerCajeroDTOPorId(Long id);
 }
