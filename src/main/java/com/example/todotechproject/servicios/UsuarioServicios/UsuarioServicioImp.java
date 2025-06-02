@@ -1,30 +1,34 @@
 package com.example.todotechproject.servicios.UsuarioServicios;
 
-import com.example.todotechproject.dto.UsuarioDTO.CrearUsuarioDTO;
 import com.example.todotechproject.dto.UsuarioDTO.UsuarioDTO;
-import com.example.todotechproject.dto.UsuarioDTO.UsuarioDTO2;
+import com.example.todotechproject.dto.UsuarioDTO.UsuarioSimpleDTO;
 import com.example.todotechproject.excepciones.UsuarioNoEncontradoException;
 import com.example.todotechproject.modelo.entidades.Usuario;
 import com.example.todotechproject.modelo.enums.TipoUsuario;
 
 import com.example.todotechproject.repositorios.UsuarioRepo;
-import com.example.todotechproject.utils.Mappers.Usuarios.UsuarioMapper2;
+import com.example.todotechproject.utils.Mappers.Usuarios.UsuarioMapper;
+import com.example.todotechproject.utils.Mappers.Usuarios.UsuarioSimpleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 @Service
 public class UsuarioServicioImp implements UsuarioServicio {
 
     @Autowired
     private UsuarioRepo usuarioRepo;
 
+    @Autowired
+    private UsuarioMapper usuarioMapper;
+
+    @Autowired
+    private UsuarioSimpleMapper usuarioSimpleMapper;
+
     @Override
-    public void crearUsuario(Usuario usuario) throws Exception {
+    public void crearUsuarioDesdeDTO(UsuarioSimpleDTO dto) throws Exception {
+        Usuario usuario = usuarioSimpleMapper.toEntity(dto);
         if (usuarioRepo.findByUsuario(usuario.getUsuario()).isPresent()) {
             throw new Exception("El usuario ya existe");
         }
@@ -32,84 +36,79 @@ public class UsuarioServicioImp implements UsuarioServicio {
     }
 
     @Override
-    public void crearUsuario2(Usuario usuario) throws Exception {
-        if (usuarioRepo.findByUsuario(usuario.getUsuario()).isPresent()) {
-            throw new Exception("El usuario ya existe");
-        }
-        usuarioRepo.save(usuario);
-    }
-
-    @Override
-    public void crearUsuarioPaquete(CrearUsuarioDTO crearUsuarioDTO) throws Exception {
-
-        UsuarioDTO2 usuarioDTO2=new UsuarioDTO2(crearUsuarioDTO.usuario(),crearUsuarioDTO.password(),crearUsuarioDTO.tipoUsuario());
-
-    }
-
-
-    @Override
-    public void actualizarUsuario(Usuario usuario) throws Exception {
-        if (!usuarioRepo.existsById(usuario.getUsuario())) {
+    public void actualizarUsuarioDesdeDTO(UsuarioDTO dto) throws Exception {
+        Usuario usuario = usuarioMapper.toEntity(dto);
+        if (!usuarioRepo.existsById(usuario.getId())) {
             throw new Exception("El usuario no existe");
         }
         usuarioRepo.save(usuario);
     }
 
+    @Override
+    public List<UsuarioDTO> listarUsuariosDTO() {
+        return usuarioMapper.toDTOList(usuarioRepo.findAll());
+    }
+
+    @Override
+    public List<UsuarioDTO> buscarUsuariosPorTipoDTO(TipoUsuario tipoUsuario) {
+        return usuarioMapper.toDTOList(usuarioRepo.findByTipoUsuario(tipoUsuario));
+    }
+
+    @Override
+    public UsuarioDTO validarCredencialesDTO(String usuario, String password) {
+        return usuarioRepo.findByUsuario(usuario)
+                .filter(u -> u.getPassword().equals(password))
+                .map(usuarioMapper::toDTO)
+                .orElse(null);
+    }
+
+    @Override
+    public UsuarioSimpleDTO obtenerUltimoUsuarioCreadoDTO() {
+        return usuarioRepo.findTopByOrderByIdDesc()
+                .map(usuarioSimpleMapper::toDTO)
+                .orElse(null);
+    }
+
+    // Métodos internos si necesitas seguir usando entidades
     @Override
     public Usuario buscarPorUsuario(String usuario) {
         return usuarioRepo.findByUsuario(usuario)
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado: " + usuario));
     }
 
-
-
-
     @Override
-    public void eliminarUsuario(Usuario usuario) throws Exception {
-        if (!usuarioRepo.existsById(usuario.getUsuario())) {
-            throw new Exception("El usuario no existe");
-        }
-        usuarioRepo.delete(usuario);
-    }
-
-    @Override
-    public void buscarUsuario(Usuario usuario) throws Exception {
-        if (!usuarioRepo.existsById(usuario.getUsuario())) {
-            throw new Exception("El usuario no existe");
-        }
-    }
-
-    @Override
-    public List<Usuario> listarUsuarios() throws Exception {
-        return usuarioRepo.findAll();
+    public void eliminarUsuario(String usuario) {
+        usuarioRepo.findByUsuario(usuario)
+                .ifPresentOrElse(
+                        usuarioRepo::delete,
+                        () -> { throw new UsuarioNoEncontradoException("Usuario no encontrado: " + usuario); }
+                );
     }
 
     @Override
     public Usuario buscarUsuarioPorId(String usuario) {
-        Optional<Usuario> resultado = usuarioRepo.findById(usuario);
-        return resultado.orElse(null);
+        return usuarioRepo.findByUsuario(usuario).orElse(null);
+    }
+
+    @Override
+    public List<Usuario> listarUsuarios() {
+        return usuarioRepo.findAll();
     }
 
     @Override
     public List<Usuario> buscarUsuariosPorTipo(TipoUsuario tipoUsuario) {
-        return new ArrayList<>(usuarioRepo.findByTipoUsuario(tipoUsuario)); // ✅ Se mantiene como Lista<Usuario>
+        return new ArrayList<>(usuarioRepo.findByTipoUsuario(tipoUsuario));
     }
-
-    @Override
-    public Usuario validarCredenciales(String usuario, String password) {
-        Usuario entidad = usuarioRepo.findByUsuario(usuario)
-                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado: " + usuario));
-        return entidad.getPassword().equals(password) ? entidad : null;
-    }
-
-    @Override
-    public void eliminarUsuario(String usuario) {
-        usuarioRepo.deleteById(usuario);
-    }
-
 
     @Override
     public Usuario obtenerUltimoUsuarioCreado() {
         return usuarioRepo.findTopByOrderByIdDesc().orElse(null);
+    }
+
+    @Override
+    public Usuario validarCredenciales(String usuario, String password) {
+        return usuarioRepo.findByUsuario(usuario)
+                .filter(u -> u.getPassword().equals(password))
+                .orElse(null);
     }
 }

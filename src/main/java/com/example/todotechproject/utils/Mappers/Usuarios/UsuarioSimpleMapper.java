@@ -1,34 +1,31 @@
 package com.example.todotechproject.utils.Mappers.Usuarios;
 
-import com.example.todotechproject.dto.UsuarioDTO.UsuarioDTO;
+import com.example.todotechproject.dto.UsuarioDTO.UsuarioSimpleDTO;
 import com.example.todotechproject.modelo.entidades.Usuario;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
-public class UsuarioMapper {
+public class UsuarioSimpleMapper {
 
-    public UsuarioDTO toDTO(Usuario usuario) {
-        return new UsuarioDTO(
-                usuario.getId(),
+    public UsuarioSimpleDTO toDTO(Usuario usuario) {
+        return new UsuarioSimpleDTO(
                 usuario.getUsuario(),
                 usuario.getPassword(),
                 usuario.getTipoUsuario()
         );
     }
 
-    public Usuario toEntity(UsuarioDTO dto) {
+    public Usuario toEntity(UsuarioSimpleDTO dto) {
         return Usuario.builder()
-                .id(dto.id())
                 .usuario(dto.usuario())
                 .password(dto.password())
                 .tipoUsuario(dto.tipoUsuario())
                 .build();
     }
 
-    public List<UsuarioDTO> toDTOList(List<Usuario> usuarios) {
+    public List<UsuarioSimpleDTO> toDTOList(List<Usuario> usuarios) {
         return usuarios.stream().map(this::toDTO).toList();
     }
 }
