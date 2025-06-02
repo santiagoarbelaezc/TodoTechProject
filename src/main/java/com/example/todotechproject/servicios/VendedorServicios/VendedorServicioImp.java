@@ -1,6 +1,5 @@
 package com.example.todotechproject.servicios.VendedorServicios;
 
-
 import com.example.todotechproject.dto.TrabajadorDTO;
 import com.example.todotechproject.modelo.entidades.*;
 import com.example.todotechproject.modelo.enums.EstadoOrden;
@@ -16,7 +15,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class VendedorServicioImp implements VendedorServicio{
+public class VendedorServicioImp implements VendedorServicio {
 
     @Autowired
     private UsuarioRepo usuarioRepo;
@@ -56,11 +55,10 @@ public class VendedorServicioImp implements VendedorServicio{
         OrdenVenta ordenVenta = new OrdenVenta();
         ordenVenta.setFecha(java.sql.Timestamp.valueOf(fecha));
         ordenVenta.setCliente(clienteGuardado);
-        ordenVenta.setTrabajador(trabajador); // Asume que OrdenVenta ya usa Trabajador
+        ordenVenta.setTrabajador(trabajador);
         ordenVenta.setEstado(EstadoOrden.PENDIENTE);
         ordenVenta.setTotal(0.0);
         ordenVenta.setProductos(List.of());
-
         return ordenVentaRepo.save(ordenVenta);
     }
 
@@ -71,30 +69,38 @@ public class VendedorServicioImp implements VendedorServicio{
     }
 
     @Override
-    public void cancelarOrdenVenta(Long ordenId) throws Exception {}
+    public void cancelarOrdenVenta(Long ordenId) throws Exception {
+        // Método vacío por ahora
+    }
 
     @Override
-    public void agregarProducto(Producto producto) throws Exception {}
+    public void agregarProducto(Producto producto) throws Exception {
+        // Método vacío por ahora
+    }
 
     @Override
-    public void eliminarProducto(Producto producto) throws Exception {}
+    public void eliminarProducto(Producto producto) throws Exception {
+        // Método vacío por ahora
+    }
 
     @Override
-    public void buscarProducto(String codigo) throws Exception {}
+    public void buscarProducto(String codigo) throws Exception {
+        // Método vacío por ahora
+    }
 
     @Override
     public List<Producto> buscarProductoNombre(String nombre) throws Exception {
-        return List.of();
+        return List.of(); // Vacío de momento
     }
 
     @Override
     public List<Producto> buscarProductoId(String id) throws Exception {
-        return List.of();
+        return List.of(); // Vacío de momento
     }
 
     @Override
     public List<Producto> buscarProductoCategoria(Categoria categoria) throws Exception {
-        return List.of();
+        return List.of(); // Vacío de momento
     }
 
     @Override
@@ -116,10 +122,14 @@ public class VendedorServicioImp implements VendedorServicio{
     }
 
     @Override
-    public void ingresarDescuento(String codigo, double descuento) throws Exception {}
+    public void ingresarDescuento(String codigo, double descuento) throws Exception {
+        // Método vacío por ahora
+    }
 
     @Override
-    public void modificarCantidadProducto(String codigo, int nuevaCantidad) throws Exception {}
+    public void modificarCantidadProducto(String codigo, int nuevaCantidad) throws Exception {
+        // Método vacío por ahora
+    }
 
     @Override
     public void actualizarVendedor(Trabajador trabajador) {
@@ -144,6 +154,4 @@ public class VendedorServicioImp implements VendedorServicio{
                 .map(trabajadorMapper::toTrabajadorDTO)
                 .collect(Collectors.toList());
     }
-
-
 }

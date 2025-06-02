@@ -46,10 +46,7 @@ public class AdminServicioImp implements AdminServicio{
 
     }
 
-    @Override
-    public Vendedor crearVendedor(Vendedor vendedor) throws Exception {
-        return null;
-    }
+
 
     @Override
     public Producto registrarProducto(String nombre, String codigo, String descripcion) throws Exception {

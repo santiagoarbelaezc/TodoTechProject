@@ -11,10 +11,6 @@ import java.util.List;
 
 public interface VendedorServicio {
 
-
-    //SERVICIOS DEL EMPLEADO
-    //SPRINT 1
-
     OrdenVenta crearOrdenVenta(LocalDateTime fecha, Cliente cliente, Trabajador trabajador) throws Exception;
 
     Trabajador buscarVendedorPorUsuario(Usuario usuario);

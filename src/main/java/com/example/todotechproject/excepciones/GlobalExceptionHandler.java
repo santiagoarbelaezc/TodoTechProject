@@ -2,6 +2,10 @@ package com.example.todotechproject.excepciones;
 
 import com.example.todotechproject.excepciones.UsuarioExcepciones.CredencialesInvalidasException;
 import com.example.todotechproject.excepciones.UsuarioExcepciones.UsuarioYaExisteException;
+import com.example.todotechproject.excepciones.VendedorExcepciones.CodigoProductoInvalidoException;
+import com.example.todotechproject.excepciones.VendedorExcepciones.ProductoNoEncontradoException;
+import com.example.todotechproject.excepciones.VendedorExcepciones.TrabajadorNoEncontradoException;
+import com.example.todotechproject.excepciones.VendedorExcepciones.UsuarioNoAsociadoException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +16,8 @@ import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    // EXISTENTES
 
     @ExceptionHandler(UsuarioNoEncontradoException.class)
     public ResponseEntity<Object> manejarUsuarioNoEncontrado(UsuarioNoEncontradoException ex) {
@@ -28,10 +34,36 @@ public class GlobalExceptionHandler {
         return construirRespuesta(HttpStatus.UNAUTHORIZED, ex.getMessage());
     }
 
+    // NUEVOS PARA VENDEDOR
+
+    @ExceptionHandler(UsuarioNoAsociadoException.class)
+    public ResponseEntity<Object> manejarUsuarioNoAsociado(UsuarioNoAsociadoException ex) {
+        return construirRespuesta(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(TrabajadorNoEncontradoException.class)
+    public ResponseEntity<Object> manejarTrabajadorNoEncontrado(TrabajadorNoEncontradoException ex) {
+        return construirRespuesta(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ExceptionHandler(ProductoNoEncontradoException.class)
+    public ResponseEntity<Object> manejarProductoNoEncontrado(ProductoNoEncontradoException ex) {
+        return construirRespuesta(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ExceptionHandler(CodigoProductoInvalidoException.class)
+    public ResponseEntity<Object> manejarCodigoProductoInvalido(CodigoProductoInvalidoException ex) {
+        return construirRespuesta(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    // GENERAL
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> manejarExcepcionGeneral(Exception ex) {
         return construirRespuesta(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno del servidor: " + ex.getMessage());
     }
+
+
 
     private ResponseEntity<Object> construirRespuesta(HttpStatus estado, String mensaje) {
         Map<String, Object> cuerpo = new LinkedHashMap<>();
@@ -41,4 +73,7 @@ public class GlobalExceptionHandler {
         cuerpo.put("mensaje", mensaje);
         return new ResponseEntity<>(cuerpo, estado);
     }
+
+
+
 }

@@ -1,8 +1,7 @@
 package com.example.todotechproject.servicios.CajeroServicios;
 
-import com.example.todotechproject.dto.CajeroDTO;
 import com.example.todotechproject.dto.TrabajadorDTO;
-import com.example.todotechproject.modelo.entidades.Cajero;
+
 import com.example.todotechproject.modelo.entidades.OrdenVenta;
 import com.example.todotechproject.modelo.entidades.Trabajador;
 import com.example.todotechproject.modelo.enums.MedioPago;

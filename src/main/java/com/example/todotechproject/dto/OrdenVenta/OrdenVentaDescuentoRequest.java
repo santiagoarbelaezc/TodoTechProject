@@ -2,7 +2,8 @@ package com.example.todotechproject.dto.OrdenVenta;
 
 import com.example.todotechproject.dto.ClienteDTO;
 import com.example.todotechproject.dto.DetalleOrden.DetalleOrdenDTO;
-import com.example.todotechproject.dto.VendedorDTO;
+import com.example.todotechproject.dto.TrabajadorDTO;
+
 import com.example.todotechproject.modelo.enums.EstadoOrden;
 
 import java.util.Date;
@@ -12,7 +13,7 @@ public record OrdenVentaDescuentoRequest(
         Long id,
         Date fecha,
         ClienteDTO cliente,
-        VendedorDTO vendedor,
+        TrabajadorDTO vendedor,
         List<DetalleOrdenDTO> productos,
         EstadoOrden estado,
         Double total,

@@ -2,7 +2,6 @@ package com.example.todotechproject.repositorios;
 
 import com.example.todotechproject.modelo.entidades.OrdenVenta;
 import com.example.todotechproject.modelo.entidades.Trabajador;
-import com.example.todotechproject.modelo.entidades.Vendedor;
 import com.example.todotechproject.modelo.enums.EstadoOrden;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

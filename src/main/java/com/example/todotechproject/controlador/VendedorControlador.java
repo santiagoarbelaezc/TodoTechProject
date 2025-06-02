@@ -3,12 +3,12 @@ package com.example.todotechproject.controlador;
 
 import com.example.todotechproject.dto.TrabajadorDTO;
 import com.example.todotechproject.dto.UsuarioDTO.UsuarioDTO;
-import com.example.todotechproject.dto.VendedorDTO;
+
 import com.example.todotechproject.modelo.entidades.Trabajador;
-import com.example.todotechproject.modelo.entidades.Vendedor;
+
 import com.example.todotechproject.servicios.VendedorServicios.VendedorServicio;
 import com.example.todotechproject.utils.Mappers.Usuarios.UsuarioMapper;
-import com.example.todotechproject.utils.Mappers.VendedorMapper;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

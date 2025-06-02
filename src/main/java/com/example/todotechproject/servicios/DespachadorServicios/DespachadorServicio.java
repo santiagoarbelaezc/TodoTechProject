@@ -1,15 +1,21 @@
 package com.example.todotechproject.servicios.DespachadorServicios;
 
-import com.example.todotechproject.dto.DespachadorDTO;
-import com.example.todotechproject.modelo.entidades.Despachador;
+import com.example.todotechproject.dto.TrabajadorDTO;
+
+import com.example.todotechproject.modelo.entidades.Trabajador;
 
 import java.util.List;
 
 public interface DespachadorServicio {
 
-    void guardarDespachador(DespachadorDTO despachador);
+    void guardarDespachador(TrabajadorDTO despachador);
 
-    void actualizarDespachador(Despachador despachador);
+    void actualizarDespachador(Trabajador despachador);
+
     void eliminarDespachador(Long id);
-    List<DespachadorDTO> listarDespachadores();
+
+    List<TrabajadorDTO> listarDespachadores();
+
+    Trabajador buscarDespachadorPorId(Long id);
+
 }

@@ -26,7 +26,7 @@ public interface AdminServicio {
 
     //
 
-    Vendedor crearVendedor (Vendedor vendedor) throws Exception;
+
     //GESTION DE PRODUCTOS
 
     Producto registrarProducto(String nombre, String codigo, String descripcion) throws Exception;
