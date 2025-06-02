@@ -1,8 +1,10 @@
 package com.example.todotechproject.servicios.CajeroServicios;
 
 import com.example.todotechproject.dto.CajeroDTO;
+import com.example.todotechproject.dto.TrabajadorDTO;
 import com.example.todotechproject.modelo.entidades.Cajero;
 import com.example.todotechproject.modelo.entidades.OrdenVenta;
+import com.example.todotechproject.modelo.entidades.Trabajador;
 import com.example.todotechproject.modelo.enums.MedioPago;
 
 import java.util.List;
@@ -11,14 +13,14 @@ public interface CajeroServicio {
 
 
 
-    void guardarCajero(CajeroDTO cajero);
+    void guardarCajero(TrabajadorDTO cajero);
 
 
-    void actualizarCajero(Cajero cajero);
+    void actualizarCajero(Trabajador cajero);
 
     void eliminarCajero(Long id);
 
-    List<CajeroDTO> listarCajeros();
+    List<TrabajadorDTO> listarCajeros();
 
     OrdenVenta buscarOrdenVenta(Long ordenId) throws Exception;
 
@@ -39,4 +41,5 @@ public interface CajeroServicio {
     List<OrdenVenta> buscarPagosPorCliente(String clienteId) throws Exception;
 
 
+    Trabajador buscarCajeroPorId(Long id);
 }

@@ -1,11 +1,10 @@
 package com.example.todotechproject.controlador;
 
-import com.example.todotechproject.dto.CajeroDTO;
-import com.example.todotechproject.dto.VendedorDTO;
-import com.example.todotechproject.modelo.entidades.Cajero;
-import com.example.todotechproject.modelo.entidades.Vendedor;
+import com.example.todotechproject.dto.TrabajadorDTO;
+import com.example.todotechproject.dto.UsuarioDTO.UsuarioDTO;
+import com.example.todotechproject.modelo.entidades.Trabajador;
 import com.example.todotechproject.servicios.CajeroServicios.CajeroServicio;
-import com.example.todotechproject.servicios.VendedorServicios.VendedorServicio;
+import com.example.todotechproject.utils.Mappers.Usuarios.UsuarioMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,23 +20,43 @@ public class CajeroControlador {
     @Autowired
     private CajeroServicio cajeroServicio;
 
+    @Autowired
+    private UsuarioMapper usuarioMapper;
 
     @GetMapping
-    public ResponseEntity<List<CajeroDTO>> obtenerCajeros() {
+    public ResponseEntity<List<TrabajadorDTO>> obtenerCajeros() {
         return ResponseEntity.ok(cajeroServicio.listarCajeros());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<TrabajadorDTO> obtenerCajeroPorId(@PathVariable Long id) {
+        Trabajador cajero = cajeroServicio.buscarCajeroPorId(id);
+        if (cajero == null) return ResponseEntity.notFound().build();
+
+        UsuarioDTO usuarioDTO = usuarioMapper.toDTO(cajero.getUsuario());
+
+        TrabajadorDTO dto = new TrabajadorDTO(
+                cajero.getId(),
+                cajero.getNombre(),
+                cajero.getCorreo(),
+                cajero.getTelefono(),
+                usuarioDTO
+        );
+
+        return ResponseEntity.ok(dto);
+    }
+
     @PostMapping("/crear")
-    public ResponseEntity<Map<String, String>> crearCajero(@RequestBody CajeroDTO cajero) {
-        cajeroServicio.guardarCajero(cajero); // reutiliza guardar
+    public ResponseEntity<Map<String, String>> crearCajero(@RequestBody TrabajadorDTO trabajadorDTO) {
+        cajeroServicio.guardarCajero(trabajadorDTO);
         Map<String, String> response = new HashMap<>();
         response.put("mensaje", "Cajero creado correctamente");
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/actualizar")
-    public ResponseEntity<String> actualizarCajero(@RequestBody Cajero cajero) {
-        cajeroServicio.actualizarCajero(cajero);
+    public ResponseEntity<String> actualizarCajero(@RequestBody Trabajador trabajador) {
+        cajeroServicio.actualizarCajero(trabajador);
         return ResponseEntity.ok("Cajero actualizado correctamente");
     }
 

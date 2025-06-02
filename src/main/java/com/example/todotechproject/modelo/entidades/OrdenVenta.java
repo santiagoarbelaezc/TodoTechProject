@@ -31,7 +31,7 @@ public class OrdenVenta {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vendedor_id", nullable = false)
-    private Vendedor vendedor;
+    private Trabajador trabajador;
 
     @OneToMany(mappedBy = "ordenVenta", cascade = CascadeType.ALL)
     private List<DetalleOrden> productos;

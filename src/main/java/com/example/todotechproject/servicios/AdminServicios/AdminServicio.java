@@ -1,9 +1,7 @@
 package com.example.todotechproject.servicios.AdminServicios;
 
 import com.example.todotechproject.modelo.entidades.*;
-import com.example.todotechproject.modelo.entidades.ReporteUsuarios;
-import com.example.todotechproject.modelo.entidades.Reportes.ReporteStock;
-import com.example.todotechproject.modelo.entidades.Reportes.ReporteVentas;
+
 import com.example.todotechproject.modelo.enums.TipoUsuario;
 
 import java.util.List;
@@ -59,11 +57,6 @@ public interface AdminServicio {
 
     //REPORTES Y ANALISIS DE LOS DATOS
 
-    List<ReporteVentas> generarReporteVentasPorFecha(String fechaInicio, String fechaFin) throws Exception;
-
-    List<ReporteStock> generarReporteStockBajo() throws Exception; // Productos con stock crítico
-
-    List<ReporteUsuarios> generarReporteUsuariosActivos() throws Exception;
 
     //GESTION INVENTARIO
 

@@ -26,15 +26,15 @@ public class OrdenVentaMapper {
                         ordenVenta.getCliente().getTelefono()
                 ),
                 new VendedorDTO(
-                        ordenVenta.getVendedor().getId(),
-                        ordenVenta.getVendedor().getNombre(),
-                        ordenVenta.getVendedor().getCorreo(),
-                        ordenVenta.getVendedor().getTelefono(),
+                        ordenVenta.getTrabajador().getId(),
+                        ordenVenta.getTrabajador().getNombre(),
+                        ordenVenta.getTrabajador().getCorreo(),
+                        ordenVenta.getTrabajador().getTelefono(),
                         new UsuarioDTO(
-                                ordenVenta.getVendedor().getUsuario().getId(),
-                                ordenVenta.getVendedor().getUsuario().getUsuario(),
-                                ordenVenta.getVendedor().getUsuario().getPassword(),
-                                ordenVenta.getVendedor().getUsuario().getTipoUsuario()
+                                ordenVenta.getTrabajador().getUsuario().getId(),
+                                ordenVenta.getTrabajador().getUsuario().getUsuario(),
+                                ordenVenta.getTrabajador().getUsuario().getPassword(),
+                                ordenVenta.getTrabajador().getUsuario().getTipoUsuario()
                         )
                 ),
                 ordenVenta.getProductos().stream()

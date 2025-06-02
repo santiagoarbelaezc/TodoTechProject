@@ -1,14 +1,14 @@
 package com.example.todotechproject.servicios.CajeroServicios;
 
-import com.example.todotechproject.dto.CajeroDTO;
-import com.example.todotechproject.modelo.entidades.Cajero;
+import com.example.todotechproject.dto.TrabajadorDTO;
+import com.example.todotechproject.modelo.entidades.Trabajador;
 import com.example.todotechproject.modelo.entidades.OrdenVenta;
 import com.example.todotechproject.modelo.enums.EstadoOrden;
 import com.example.todotechproject.modelo.enums.MedioPago;
-import com.example.todotechproject.repositorios.CajeroRepo;
+import com.example.todotechproject.repositorios.TrabajadorRepo;
 import com.example.todotechproject.repositorios.OrdenVentaRepo;
 
-import com.example.todotechproject.utils.Mappers.CajeroMapper;
+import com.example.todotechproject.utils.Mappers.TrabajadorMapper;
 import com.example.todotechproject.utils.Mappers.Usuarios.UsuarioMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,42 +23,47 @@ public class CajeroServicioImp implements CajeroServicio {
     private OrdenVentaRepo ordenVentaRepo;
 
     @Autowired
-    private CajeroRepo cajeroRepo;
+    private TrabajadorRepo trabajadorRepo;
 
     @Autowired
     private UsuarioMapper usuarioMapper;
 
     @Autowired
-    private CajeroMapper cajeroMapper;
+    private TrabajadorMapper trabajadorMapper;
 
     // ... Métodos anteriores de pagos ...
 
     @Override
-    public void guardarCajero(CajeroDTO cajero) {
-        cajeroRepo.save(cajeroMapper.cajeroDTOToCajero(cajero));
+    public void guardarCajero(TrabajadorDTO trabajadorDTO) {
+        trabajadorRepo.save(trabajadorMapper.toTrabajador(trabajadorDTO));
     }
 
     @Override
-    public void actualizarCajero(Cajero cajero) {
-        if (!cajeroRepo.existsById(cajero.getId())) {
-            throw new RuntimeException("Cajero no encontrado");
+    public void actualizarCajero(Trabajador trabajador) {
+        if (!trabajadorRepo.existsById(trabajador.getId())) {
+            throw new RuntimeException("Trabajador no encontrado");
         }
-        cajeroRepo.save(cajero);
+        trabajadorRepo.save(trabajador);
     }
 
     @Override
     public void eliminarCajero(Long id) {
-        if (!cajeroRepo.existsById(id)) {
-            throw new RuntimeException("Cajero no encontrado");
+        if (!trabajadorRepo.existsById(id)) {
+            throw new RuntimeException("Trabajador no encontrado");
         }
-        cajeroRepo.deleteById(id);
+        trabajadorRepo.deleteById(id);
     }
 
     @Override
-    public List<CajeroDTO> listarCajeros() {
-        return cajeroRepo.findAll().stream()
-                .map(cajero -> new CajeroDTO(cajero.getId(), cajero.getNombre(), cajero.getCorreo(),
-                        cajero.getTelefono(), usuarioMapper.toDTO(cajero.getUsuario())))
+    public List<TrabajadorDTO> listarCajeros() {
+        return trabajadorRepo.findAll().stream()
+                .map(trabajador -> new TrabajadorDTO(
+                        trabajador.getId(),
+                        trabajador.getNombre(),
+                        trabajador.getCorreo(),
+                        trabajador.getTelefono(),
+                        usuarioMapper.toDTO(trabajador.getUsuario())
+                ))
                 .collect(Collectors.toList());
     }
 
@@ -70,7 +75,7 @@ public class CajeroServicioImp implements CajeroServicio {
 
     @Override
     public void procesarPago(Long ordenId, MedioPago metodoPago, double monto, String referenciaPago) throws Exception {
-
+        // Implementar lógica de procesamiento de pago si es necesario
     }
 
     @Override
@@ -88,7 +93,7 @@ public class CajeroServicioImp implements CajeroServicio {
     @Override
     public void emitirComprobante(Long ordenId) throws Exception {
         OrdenVenta orden = buscarOrdenVenta(ordenId);
-        if (!orden.getEstado().equals("PAGADO")) {
+        if (!orden.getEstado().equals(EstadoOrden.PAGADA)) {
             throw new Exception("No se puede emitir comprobante para orden no pagada");
         }
         // Aquí generarías un PDF o documento con JasperReports
@@ -104,13 +109,13 @@ public class CajeroServicioImp implements CajeroServicio {
 
     @Override
     public List<OrdenVenta> listarOrdenesPendientes() {
-        return ordenVentaRepo.findByEstado(EstadoOrden.valueOf("PENDIENTE"));
+        return ordenVentaRepo.findByEstado(EstadoOrden.PENDIENTE);
     }
 
     @Override
     public void generarFactura(Long ordenId) throws Exception {
         OrdenVenta orden = buscarOrdenVenta(ordenId);
-        if (!orden.getEstado().equals("PAGADO")) {
+        if (!orden.getEstado().equals(EstadoOrden.PAGADA)) {
             throw new Exception("Solo se puede generar factura para ordenes pagadas");
         }
         System.out.println("Factura generada para orden: " + ordenId);
@@ -120,4 +125,11 @@ public class CajeroServicioImp implements CajeroServicio {
     public List<OrdenVenta> buscarPagosPorCliente(String clienteId) throws Exception {
         return ordenVentaRepo.findByCliente_Id(Long.valueOf(clienteId));
     }
+
+
+    @Override
+    public Trabajador buscarCajeroPorId(Long id) {
+        return trabajadorRepo.findById(id).orElse(null);
+    }
+
 }

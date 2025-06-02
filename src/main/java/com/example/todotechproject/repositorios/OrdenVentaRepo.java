@@ -1,6 +1,7 @@
 package com.example.todotechproject.repositorios;
 
 import com.example.todotechproject.modelo.entidades.OrdenVenta;
+import com.example.todotechproject.modelo.entidades.Trabajador;
 import com.example.todotechproject.modelo.entidades.Vendedor;
 import com.example.todotechproject.modelo.enums.EstadoOrden;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,7 +15,7 @@ public interface OrdenVentaRepo extends JpaRepository<OrdenVenta, Long> {
 
     OrdenVenta findTopByOrderByIdDesc();
 
-    List<OrdenVenta> findByVendedor(Vendedor vendedor);
+    List<OrdenVenta> findByTrabajador(Trabajador trabajador);
 
     List<OrdenVenta> findByEstado(EstadoOrden estado);
 

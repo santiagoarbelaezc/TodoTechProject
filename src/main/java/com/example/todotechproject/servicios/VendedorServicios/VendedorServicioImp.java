@@ -1,12 +1,12 @@
 package com.example.todotechproject.servicios.VendedorServicios;
 
-import com.example.todotechproject.dto.Reporte.ReporteRendimientoDTO;
-import com.example.todotechproject.dto.UsuarioDTO.UsuarioDTO;
-import com.example.todotechproject.dto.VendedorDTO;
+
+import com.example.todotechproject.dto.TrabajadorDTO;
 import com.example.todotechproject.modelo.entidades.*;
 import com.example.todotechproject.modelo.enums.EstadoOrden;
 import com.example.todotechproject.repositorios.*;
-import com.example.todotechproject.utils.Mappers.VendedorMapper;
+import com.example.todotechproject.utils.Mappers.TrabajadorMapper;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +16,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-
 public class VendedorServicioImp implements VendedorServicio{
 
     @Autowired
     private UsuarioRepo usuarioRepo;
 
     @Autowired
-    private VendedorRepo vendedorRepo;
+    private TrabajadorRepo trabajadorRepo;
 
     @Autowired
     private OrdenVentaRepo ordenVentaRepo;
@@ -35,82 +34,63 @@ public class VendedorServicioImp implements VendedorServicio{
     private ClienteRepo clienteRepo;
 
     @Autowired
-    private VendedorMapper vendedorMapper;
+    private TrabajadorMapper trabajadorMapper;
 
     @Override
-    public void crearVendedor(VendedorDTO vendedorDTO) {
-        // Recuperar el usuario por su nombre de usuario (o ID si lo manejas así)
-        Optional<Usuario> usuarioOptional = usuarioRepo.findByUsuario(vendedorDTO.usuario().usuario());
+    public void crearVendedor(TrabajadorDTO trabajadorDTO) {
+        Optional<Usuario> usuarioOptional = usuarioRepo.findByUsuario(trabajadorDTO.usuario().usuario());
 
         if (usuarioOptional.isPresent()) {
             Usuario usuario = usuarioOptional.get();
-
-            // Mapear DTO a entidad
-            Vendedor vendedor = vendedorMapper.vendedorDTOToVendedor(vendedorDTO);
-            vendedor.setUsuario(usuario); // Aquí se asegura que el usuario es persistente
-
-            vendedorRepo.save(vendedor);
+            Trabajador trabajador = trabajadorMapper.toTrabajador(trabajadorDTO);
+            trabajador.setUsuario(usuario);
+            trabajadorRepo.save(trabajador);
         } else {
             throw new RuntimeException("El usuario asociado no fue encontrado");
         }
     }
 
     @Override
-    public OrdenVenta crearOrdenVenta(LocalDateTime fecha, Cliente cliente, Vendedor vendedor) throws Exception {
+    public OrdenVenta crearOrdenVenta(LocalDateTime fecha, Cliente cliente, Trabajador trabajador) throws Exception {
         Cliente clienteGuardado = clienteRepo.save(cliente);
         OrdenVenta ordenVenta = new OrdenVenta();
         ordenVenta.setFecha(java.sql.Timestamp.valueOf(fecha));
         ordenVenta.setCliente(clienteGuardado);
-        ordenVenta.setVendedor(vendedor);
-        ordenVenta.setEstado(EstadoOrden.PENDIENTE); // Estado por defecto
-        ordenVenta.setTotal(0.0); // Total vacío por defecto
-        ordenVenta.setProductos(List.of()); // Lista vacía de productos
+        ordenVenta.setTrabajador(trabajador); // Asume que OrdenVenta ya usa Trabajador
+        ordenVenta.setEstado(EstadoOrden.PENDIENTE);
+        ordenVenta.setTotal(0.0);
+        ordenVenta.setProductos(List.of());
 
         return ordenVentaRepo.save(ordenVenta);
     }
 
     @Override
-    public Vendedor buscarVendedorPorUsuario(Usuario usuario) {
-        return vendedorRepo.findByUsuario(usuario)
-                .orElseThrow(() -> new RuntimeException("Vendedor no encontrado para el usuario: " + usuario.getUsuario()));
-    }
-
-
-    @Override
-    public void cancelarOrdenVenta(Long ordenId) throws Exception {
-        // Lógica para cancelar una orden (se debería interactuar con un repositorio de OrdenVenta)
+    public Trabajador buscarVendedorPorUsuario(Usuario usuario) {
+        return trabajadorRepo.findByUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Trabajador no encontrado para el usuario: " + usuario.getUsuario()));
     }
 
     @Override
-    public void agregarProducto(Producto producto) throws Exception {
-        // Lógica para agregar un producto al inventario
-    }
+    public void cancelarOrdenVenta(Long ordenId) throws Exception {}
 
     @Override
-    public void eliminarProducto(Producto producto) throws Exception {
-        // Lógica para eliminar un producto del inventario
-    }
+    public void agregarProducto(Producto producto) throws Exception {}
 
     @Override
-    public void buscarProducto(String codigo) throws Exception {
-        // Lógica para buscar un producto por código en el inventario
-    }
+    public void eliminarProducto(Producto producto) throws Exception {}
 
-    //JUAN DAVID
+    @Override
+    public void buscarProducto(String codigo) throws Exception {}
 
     @Override
     public List<Producto> buscarProductoNombre(String nombre) throws Exception {
         return List.of();
     }
 
-    //JUAN DAVID
-
     @Override
     public List<Producto> buscarProductoId(String id) throws Exception {
         return List.of();
     }
-
-    //JUAN DAVID
 
     @Override
     public List<Producto> buscarProductoCategoria(Categoria categoria) throws Exception {
@@ -119,115 +99,51 @@ public class VendedorServicioImp implements VendedorServicio{
 
     @Override
     public int consultarDisponibilidad(String codigo) throws Exception {
-        // Lógica para consultar la disponibilidad de un producto en el inventario //ELI
-        //Validar que el código no sea nulo o vacío
-        if (codigo == null || codigo.trim().isEmpty()){
+        if (codigo == null || codigo.trim().isEmpty()) {
             throw new IllegalArgumentException("El código del producto no puede ser nulo o vacío");
         }
 
         try {
-            //Buscar producto por código
             Producto producto = productoRepo.findByCodigo(codigo);
-
-            if(producto != null){
+            if (producto != null) {
                 return producto.getStock();
             } else {
                 throw new Exception("El producto con código " + codigo + " no existe");
             }
-        }catch (Exception e) {
-            throw new Exception("Error al consultar la disponibilidad del producto: " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new Exception("Error al consultar disponibilidad del producto: " + e.getMessage(), e);
         }
-
     }
 
     @Override
-    public void ingresarDescuento(String codigo, double descuento) throws Exception {
-        // Lógica para ingresar un descuento a un producto
-    }
+    public void ingresarDescuento(String codigo, double descuento) throws Exception {}
 
     @Override
-    public void modificarCantidadProducto(String codigo, int nuevaCantidad) throws Exception {
-        // Lógica para modificar la cantidad de un producto en el inventario
-    }
+    public void modificarCantidadProducto(String codigo, int nuevaCantidad) throws Exception {}
 
     @Override
-    public void actualizarVendedor(Vendedor vendedor) {
-        if (vendedorRepo.existsById(vendedor.getId())) {
-            vendedorRepo.save(vendedor);
+    public void actualizarVendedor(Trabajador trabajador) {
+        if (trabajadorRepo.existsById(trabajador.getId())) {
+            trabajadorRepo.save(trabajador);
         }
     }
 
     @Override
     public void eliminarVendedor(Long id) {
-        vendedorRepo.deleteById(id);
+        trabajadorRepo.deleteById(id);
     }
 
     @Override
-    public Vendedor buscarVendedorPorId(Long id) {
-        Optional<Vendedor> vendedor = vendedorRepo.findById(id);
-        return vendedor.orElse(null);
+    public Trabajador buscarVendedorPorId(Long id) {
+        return trabajadorRepo.findById(id).orElse(null);
     }
 
     @Override
-    public List<VendedorDTO> listarVendedores() {
-        List<Vendedor> vendedores = vendedorRepo.findAll();
-        return vendedores.stream()
-                .map(v -> new VendedorDTO(
-                        v.getId(),
-                        v.getNombre(),
-                        v.getCorreo(),
-                        v.getTelefono(),
-                        new UsuarioDTO(
-                                v.getUsuario().getId(),
-                                v.getUsuario().getUsuario(),
-                                v.getUsuario().getPassword(),
-                                v.getUsuario().getTipoUsuario()
-                        )
-                ))
+    public List<TrabajadorDTO> listarVendedores() {
+        return trabajadorRepo.findAll().stream()
+                .map(trabajadorMapper::toTrabajadorDTO)
                 .collect(Collectors.toList());
     }
-
-
-    @Override
-    public List<ReporteRendimientoDTO> obtenerReporteRendimiento() {
-        // Obtenemos todos los vendedores
-        List<Vendedor> vendedores = vendedorRepo.findAll();
-
-        // Generamos y ordenamos los ReporteRendimientoDTO por totalVentas descendente
-        return vendedores.stream()
-                .map(vendedor -> {
-                    // Obtenemos las órdenes de venta del vendedor
-                    List<OrdenVenta> ordenes = ordenVentaRepo.findByVendedor(vendedor);
-
-                    // Sumamos el total de ventas del vendedor
-                    double totalVentas = ordenes.stream()
-                            .mapToDouble(orden -> orden.getProductos().stream()
-                                    .mapToDouble(DetalleOrden::getSubtotal)
-                                    .sum())
-                            .sum();
-
-                    // Creamos el DTO del vendedor
-                    VendedorDTO vendedorDTO = new VendedorDTO(
-                            vendedor.getId(),
-                            vendedor.getNombre(),
-                            vendedor.getCorreo(),
-                            vendedor.getTelefono(),
-                            new UsuarioDTO(
-                                    vendedor.getUsuario().getId(),
-                                    vendedor.getUsuario().getUsuario(),
-                                    vendedor.getUsuario().getPassword(),
-                                    vendedor.getUsuario().getTipoUsuario()
-                            )
-                    );
-
-                    return new ReporteRendimientoDTO(vendedorDTO, totalVentas);
-                })
-                // Ordenamos por totalVentas descendente
-                .sorted((r1, r2) -> Double.compare(r2.totalVentas(), r1.totalVentas()))
-                .collect(Collectors.toList());
-    }
-
-
 
 
 }

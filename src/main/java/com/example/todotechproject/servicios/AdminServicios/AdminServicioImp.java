@@ -1,9 +1,7 @@
 package com.example.todotechproject.servicios.AdminServicios;
 
 import com.example.todotechproject.modelo.entidades.*;
-import com.example.todotechproject.modelo.entidades.ReporteUsuarios;
-import com.example.todotechproject.modelo.entidades.Reportes.ReporteStock;
-import com.example.todotechproject.modelo.entidades.Reportes.ReporteVentas;
+
 import com.example.todotechproject.modelo.enums.TipoUsuario;
 import org.springframework.stereotype.Service;
 
@@ -101,21 +99,6 @@ public class AdminServicioImp implements AdminServicio{
     @Override
     public void cancelarOrdenVenta(Long ordenId) throws Exception {
 
-    }
-
-    @Override
-    public List<ReporteVentas> generarReporteVentasPorFecha(String fechaInicio, String fechaFin) throws Exception {
-        return List.of();
-    }
-
-    @Override
-    public List<ReporteStock> generarReporteStockBajo() throws Exception {
-        return List.of();
-    }
-
-    @Override
-    public List<ReporteUsuarios> generarReporteUsuariosActivos() throws Exception {
-        return List.of();
     }
 
     @Override

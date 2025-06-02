@@ -3,9 +3,7 @@ package com.example.todotechproject.servicios.OrdenVentaServicios;
 import com.example.todotechproject.dto.OrdenVenta.CrearOrdenDTO;
 import com.example.todotechproject.dto.OrdenVenta.OrdenVentaDTO;
 import com.example.todotechproject.dto.OrdenVenta.OrdenVentaDescuentoRequest;
-import com.example.todotechproject.modelo.entidades.OrdenVenta;
-import com.example.todotechproject.modelo.entidades.Usuario;
-import com.example.todotechproject.modelo.entidades.Vendedor;
+import com.example.todotechproject.modelo.entidades.*;
 import com.example.todotechproject.modelo.enums.EstadoOrden;
 import com.example.todotechproject.repositorios.DetalleOrdenRepo;
 import com.example.todotechproject.repositorios.OrdenVentaRepo;
@@ -14,7 +12,6 @@ import com.example.todotechproject.servicios.VendedorServicios.VendedorServicio;
 import com.example.todotechproject.utils.Mappers.OrdenVentaMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.example.todotechproject.modelo.entidades.DetalleOrden;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -50,7 +47,7 @@ public class OrdenVentaServicioImp implements OrdenVentaServicio {
             throw new com.example.todotechproject.excepciones.UsuarioNoEncontradoException("El usuario no existe");
         }
 
-        Vendedor vendedor = vendedorServicio.buscarVendedorPorUsuario(usuario);
+        Trabajador vendedor = vendedorServicio.buscarVendedorPorUsuario(usuario);
 
         return vendedorServicio.crearOrdenVenta(
                 LocalDateTime.now(),
@@ -66,7 +63,7 @@ public class OrdenVentaServicioImp implements OrdenVentaServicio {
 
         // ⚠️ Forzar carga de relaciones perezosas
         ultimaOrden.getCliente().getNombre();
-        ultimaOrden.getVendedor().getNombre();
+        ultimaOrden.getTrabajador().getNombre();
         ultimaOrden.getProductos().forEach(p -> {
             p.getProducto().getId();
         });
@@ -107,7 +104,7 @@ public class OrdenVentaServicioImp implements OrdenVentaServicio {
                 .map(orden -> {
                     // Forzar carga de relaciones perezosas
                     orden.getCliente().getNombre();
-                    orden.getVendedor().getNombre();
+                    orden.getTrabajador().getNombre();
                     orden.getProductos().forEach(p -> p.getProducto().getId());
 
                     return OrdenVentaMapper.toDTO(orden);

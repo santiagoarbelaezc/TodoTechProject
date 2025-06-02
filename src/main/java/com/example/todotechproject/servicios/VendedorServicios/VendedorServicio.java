@@ -1,9 +1,10 @@
 package com.example.todotechproject.servicios.VendedorServicios;
 
-import com.example.todotechproject.dto.Reporte.ReporteRendimientoDTO;
-import com.example.todotechproject.dto.VendedorDTO;
+
+import com.example.todotechproject.dto.TrabajadorDTO;
+
 import com.example.todotechproject.modelo.entidades.*;
-import com.example.todotechproject.modelo.enums.EstadoOrden;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,9 +15,9 @@ public interface VendedorServicio {
     //SERVICIOS DEL EMPLEADO
     //SPRINT 1
 
-    OrdenVenta crearOrdenVenta(LocalDateTime fecha, Cliente cliente, Vendedor vendedor) throws Exception;
+    OrdenVenta crearOrdenVenta(LocalDateTime fecha, Cliente cliente, Trabajador trabajador) throws Exception;
 
-    Vendedor buscarVendedorPorUsuario(Usuario usuario);
+    Trabajador buscarVendedorPorUsuario(Usuario usuario);
 
     void cancelarOrdenVenta(Long ordenId) throws Exception;
 
@@ -37,15 +38,13 @@ public interface VendedorServicio {
     void modificarCantidadProducto(String codigo, int nuevaCantidad) throws Exception;
 
 
-    void actualizarVendedor(Vendedor vendedor);
+    void actualizarVendedor(Trabajador trabajador);
 
     void eliminarVendedor(Long id);
 
-    Vendedor buscarVendedorPorId(Long id);
+    Trabajador buscarVendedorPorId(Long id);
 
-    List<VendedorDTO> listarVendedores();
+    List<TrabajadorDTO> listarVendedores();
 
-    List<ReporteRendimientoDTO> obtenerReporteRendimiento();
-
-    void crearVendedor(VendedorDTO vendedor);
+    void crearVendedor(TrabajadorDTO trabajadorDTO);
 }

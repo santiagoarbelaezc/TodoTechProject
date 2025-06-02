@@ -48,14 +48,14 @@ public class OrdenVentaDescuentoMapper {
     }
 
     private VendedorDTO mapVendedor(OrdenVenta ordenVenta) {
-        if (ordenVenta.getVendedor() == null) return null;
+        if (ordenVenta.getTrabajador() == null) return null;
 
         return new VendedorDTO(
-                ordenVenta.getVendedor().getId(),
-                ordenVenta.getVendedor().getNombre(),
-                ordenVenta.getVendedor().getCorreo(),
-                ordenVenta.getVendedor().getTelefono(),
-                usuarioMapper.toDTO(ordenVenta.getVendedor().getUsuario()) // Usamos el mapper aquí
+                ordenVenta.getTrabajador().getId(),
+                ordenVenta.getTrabajador().getNombre(),
+                ordenVenta.getTrabajador().getCorreo(),
+                ordenVenta.getTrabajador().getTelefono(),
+                usuarioMapper.toDTO(ordenVenta.getTrabajador().getUsuario()) // Usamos el mapper aquí
         );
     }
 
