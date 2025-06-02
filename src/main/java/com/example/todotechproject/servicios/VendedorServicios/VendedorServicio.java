@@ -8,6 +8,7 @@ import com.example.todotechproject.modelo.entidades.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public interface VendedorServicio {
 
@@ -43,4 +44,10 @@ public interface VendedorServicio {
     List<TrabajadorDTO> listarVendedores();
 
     void crearVendedor(TrabajadorDTO trabajadorDTO);
+
+    Map<String, String> crearVendedorYMensaje(TrabajadorDTO trabajadorDTO);
+
+    TrabajadorDTO obtenerVendedorDTOPorId(Long id);
+
+    void actualizarVendedorDTO(TrabajadorDTO dto);
 }

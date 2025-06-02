@@ -2,6 +2,7 @@ package com.example.todotechproject.servicios.ProductoServicios;
 
 import com.example.todotechproject.dto.ProductoDTO;
 import com.example.todotechproject.dto.ProductoReporteRequest;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -28,4 +29,12 @@ public interface ProductoServicio {
     void eliminarProducto(Long id);
 
     List<ProductoReporteRequest> obtenerReporteVentasPorProducto();
+
+    ResponseEntity<?> consultarDisponibilidad(String codigo);
+
+    ResponseEntity<?> isProductoDisponible(String codigo);
+
+    ResponseEntity<?> crearProductoResponse(ProductoDTO productoDTO);
+
+    ResponseEntity<?> eliminarProductoResponse(Long id);
 }

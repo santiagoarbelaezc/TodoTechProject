@@ -1,16 +1,20 @@
 package com.example.todotechproject.servicios.VendedorServicios;
 
 import com.example.todotechproject.dto.TrabajadorDTO;
+import com.example.todotechproject.dto.UsuarioDTO.UsuarioDTO;
 import com.example.todotechproject.modelo.entidades.*;
 import com.example.todotechproject.modelo.enums.EstadoOrden;
 import com.example.todotechproject.repositorios.*;
 import com.example.todotechproject.utils.Mappers.TrabajadorMapper;
 
+import com.example.todotechproject.utils.Mappers.Usuarios.UsuarioMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,6 +38,10 @@ public class VendedorServicioImp implements VendedorServicio {
 
     @Autowired
     private TrabajadorMapper trabajadorMapper;
+
+    @Autowired
+    private UsuarioMapper usuarioMapper;
+
 
     @Override
     public void crearVendedor(TrabajadorDTO trabajadorDTO) {
@@ -110,16 +118,15 @@ public class VendedorServicioImp implements VendedorServicio {
         }
 
         try {
-            Producto producto = productoRepo.findByCodigo(codigo);
-            if (producto != null) {
-                return producto.getStock();
-            } else {
-                throw new Exception("El producto con código " + codigo + " no existe");
-            }
+            Producto producto = productoRepo.findByCodigo(codigo)
+                    .orElseThrow(() -> new Exception("El producto con código " + codigo + " no existe"));
+
+            return producto.getStock();
         } catch (Exception e) {
             throw new Exception("Error al consultar disponibilidad del producto: " + e.getMessage(), e);
         }
     }
+
 
     @Override
     public void ingresarDescuento(String codigo, double descuento) throws Exception {
@@ -153,5 +160,41 @@ public class VendedorServicioImp implements VendedorServicio {
         return trabajadorRepo.findAll().stream()
                 .map(trabajadorMapper::toTrabajadorDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Map<String, String> crearVendedorYMensaje(TrabajadorDTO trabajadorDTO) {
+        crearVendedor(trabajadorDTO); // ya implementado
+        Map<String, String> response = new HashMap<>();
+        response.put("mensaje", "Vendedor creado correctamente");
+        return response;
+    }
+
+
+    @Override
+    public TrabajadorDTO obtenerVendedorDTOPorId(Long id) {
+        Trabajador vendedor = buscarVendedorPorId(id);
+        if (vendedor == null) return null;
+
+        UsuarioDTO usuarioDTO = usuarioMapper.toDTO(vendedor.getUsuario());
+
+        return new TrabajadorDTO(
+                vendedor.getId(),
+                vendedor.getNombre(),
+                vendedor.getCorreo(),
+                vendedor.getTelefono(),
+                usuarioDTO
+        );
+    }
+
+
+    @Override
+    public void actualizarVendedorDTO(TrabajadorDTO dto) {
+        Trabajador vendedor = trabajadorMapper.toTrabajador(dto);
+        if (trabajadorRepo.existsById(vendedor.getId())) {
+            trabajadorRepo.save(vendedor);
+        } else {
+            throw new RuntimeException("Vendedor no encontrado con ID: " + vendedor.getId());
+        }
     }
 }

@@ -17,8 +17,8 @@ public interface DetalleOrdenServicio {
 
     ResponseEntity<String> eliminar(EliminarDetalleRequest request);
 
-    ResponseEntity<DetalleOrdenDTO> aumentarCantidad(Long productoId, Long ordenVentaId);
+    DetalleOrdenDTO aumentarCantidad(Long productoId, Long ordenVentaId);
 
-    ResponseEntity<DetalleOrdenDTO> disminuirCantidad(Long productoId, Long ordenVentaId);
+    DetalleOrdenDTO disminuirCantidad(Long productoId, Long ordenVentaId);
 }
 

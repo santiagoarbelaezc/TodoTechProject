@@ -1,8 +1,8 @@
 package com.example.todotechproject.servicios.DetalleOrdenServicios;
 
-import com.example.todotechproject.dto.DetalleOrden.CrearDetalleRequest;
-import com.example.todotechproject.dto.DetalleOrden.DetalleOrdenDTO;
-import com.example.todotechproject.dto.DetalleOrden.EliminarDetalleRequest;
+import com.example.todotechproject.dto.DetalleOrden.*;
+import com.example.todotechproject.dto.OrdenVenta.OrdenVentaDTO;
+import com.example.todotechproject.dto.OrdenVenta.OrdenVentaDescuentoRequest;
 import com.example.todotechproject.dto.ProductoDTO;
 import com.example.todotechproject.modelo.entidades.DetalleOrden;
 import com.example.todotechproject.modelo.entidades.OrdenVenta;
@@ -10,6 +10,7 @@ import com.example.todotechproject.modelo.entidades.Producto;
 import com.example.todotechproject.repositorios.DetalleOrdenRepo;
 import com.example.todotechproject.repositorios.OrdenVentaRepo;
 import com.example.todotechproject.repositorios.ProductoRepo;
+import com.example.todotechproject.servicios.OrdenVentaServicios.OrdenVentaServicio;
 import com.example.todotechproject.utils.Mappers.DetalleOrdenMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +32,9 @@ public class DetalleOrdenServicioImp implements DetalleOrdenServicio {
 
     @Autowired
     private OrdenVentaRepo ordenVentaRepo;
+
+    @Autowired
+    private OrdenVentaServicio ordenVentaServicio;
 
     @Override
     public DetalleOrdenDTO crearDetalle(ProductoDTO productoDTO, Long ordenVentaId) {
@@ -168,73 +173,98 @@ public class DetalleOrdenServicioImp implements DetalleOrdenServicio {
 
 
     @Override
-    public ResponseEntity<DetalleOrdenDTO> aumentarCantidad(Long productoId, Long ordenVentaId) {
-        // Obtener el detalle de la orden
+    public DetalleOrdenDTO aumentarCantidad(Long productoId, Long ordenVentaId) {
         DetalleOrden detalle = detalleOrdenRepo.findByProductoIdAndOrdenVentaId(productoId, ordenVentaId)
                 .orElseThrow(() -> new RuntimeException("Detalle de orden no encontrado"));
 
-        // Incrementamos la cantidad y calculamos el nuevo subtotal
+        Producto producto = detalle.getProducto();
+        if (producto.getStock() <= 0) {
+            throw new RuntimeException("No hay stock disponible");
+        }
+
         int nuevaCantidad = detalle.getCantidad() + 1;
         detalle.setCantidad(nuevaCantidad);
-        detalle.setSubtotal(detalle.getProducto().getPrecio() * nuevaCantidad);
+        detalle.setSubtotal(producto.getPrecio() * nuevaCantidad);
 
-        // Actualizamos el stock del producto
-        Producto producto = detalle.getProducto();
-        if (producto.getStock() > 0) {
-            producto.setStock(producto.getStock() - 1); // Restamos 1 al stock del producto
-            productoRepo.save(producto); // Guardamos los cambios en el producto
-        } else {
-            return ResponseEntity.badRequest().body(null); // Si el stock es 0, no podemos aumentar la cantidad
-        }
+        producto.setStock(producto.getStock() - 1);
+        productoRepo.save(producto);
 
-        // Guardamos el detalle actualizado
-        DetalleOrden actualizado = detalleOrdenRepo.save(detalle);
+        detalleOrdenRepo.save(detalle);
 
-        // Obtenemos la ordenVenta por su ID
         OrdenVenta ordenVenta = ordenVentaRepo.findById(ordenVentaId)
                 .orElseThrow(() -> new RuntimeException("Orden de venta no encontrada"));
-
-        // Actualizamos el total de la orden
         actualizarTotalOrden(ordenVenta);
 
-        // Retornamos el DTO del detalle actualizado
-        return ResponseEntity.ok(DetalleOrdenMapper.toDTO(actualizado));
+        return DetalleOrdenMapper.toDTO(detalle);
     }
 
+
     @Override
-    public ResponseEntity<DetalleOrdenDTO> disminuirCantidad(Long productoId, Long ordenVentaId) {
-        // Obtener el detalle de la orden
+    public DetalleOrdenDTO disminuirCantidad(Long productoId, Long ordenVentaId) {
         DetalleOrden detalle = detalleOrdenRepo.findByProductoIdAndOrdenVentaId(productoId, ordenVentaId)
                 .orElseThrow(() -> new RuntimeException("Detalle de orden no encontrado"));
 
-        // Validamos que no sea menor a 1
         if (detalle.getCantidad() <= 1) {
-            return ResponseEntity.badRequest().body(null); // Podrías eliminar el detalle si la cantidad es 1
+            throw new RuntimeException("No se puede disminuir más la cantidad");
         }
 
-        // Decrementamos la cantidad y calculamos el nuevo subtotal
         int nuevaCantidad = detalle.getCantidad() - 1;
         detalle.setCantidad(nuevaCantidad);
         detalle.setSubtotal(detalle.getProducto().getPrecio() * nuevaCantidad);
 
-        // Actualizamos el stock del producto
         Producto producto = detalle.getProducto();
-        producto.setStock(producto.getStock() + 1); // Aumentamos 1 al stock del producto
-        productoRepo.save(producto); // Guardamos los cambios en el producto
+        producto.setStock(producto.getStock() + 1);
+        productoRepo.save(producto);
 
-        // Guardamos el detalle actualizado
-        DetalleOrden actualizado = detalleOrdenRepo.save(detalle);
+        detalleOrdenRepo.save(detalle);
 
-        // Obtenemos la ordenVenta por su ID
         OrdenVenta ordenVenta = ordenVentaRepo.findById(ordenVentaId)
                 .orElseThrow(() -> new RuntimeException("Orden de venta no encontrada"));
-
-        // Actualizamos el total de la orden
         actualizarTotalOrden(ordenVenta);
 
-        // Retornamos el DTO del detalle actualizado
-        return ResponseEntity.ok(DetalleOrdenMapper.toDTO(actualizado));
+        return DetalleOrdenMapper.toDTO(detalle);
     }
+
+
+
+    public ResponseEntity<List<DetalleOrdenDTO>> obtenerDetallesPorOrden(Long ordenId) {
+        try {
+            List<DetalleOrdenDTO> detalles = obtenerPorOrdenVenta(ordenId);
+            return ResponseEntity.ok(detalles);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
+    }
+
+
+    public ResponseEntity<?> aplicarDescuentoOrden(AplicarDescuentoRequest request) {
+        try {
+            OrdenVentaDescuentoRequest ordenConDescuento = ordenVentaServicio.aplicarDescuento(
+                    request.ordenVentaId(), request.porcentajeDescuento()
+            );
+            return ResponseEntity.ok(ordenConDescuento);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Error al aplicar descuento: " + e.getMessage()));
+        }
+    }
+
+    public ResponseEntity<?> removerDescuentoOrden(Long ordenVentaId) {
+        try {
+            OrdenVentaDTO ordenDTO = ordenVentaServicio.removerDescuento(ordenVentaId);
+            return ResponseEntity.ok(ordenDTO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Error al remover descuento: " + e.getMessage()));
+        }
+    }
+
 
 
 
