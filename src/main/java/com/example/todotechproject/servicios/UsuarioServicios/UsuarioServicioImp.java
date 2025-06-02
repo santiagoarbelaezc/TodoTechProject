@@ -2,6 +2,8 @@ package com.example.todotechproject.servicios.UsuarioServicios;
 
 import com.example.todotechproject.dto.UsuarioDTO.UsuarioDTO;
 import com.example.todotechproject.dto.UsuarioDTO.UsuarioSimpleDTO;
+import com.example.todotechproject.excepciones.UsuarioExcepciones.CredencialesInvalidasException;
+import com.example.todotechproject.excepciones.UsuarioExcepciones.UsuarioYaExisteException;
 import com.example.todotechproject.excepciones.UsuarioNoEncontradoException;
 import com.example.todotechproject.modelo.entidades.Usuario;
 import com.example.todotechproject.modelo.enums.TipoUsuario;
@@ -14,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+
 @Service
 public class UsuarioServicioImp implements UsuarioServicio {
 
@@ -27,19 +31,19 @@ public class UsuarioServicioImp implements UsuarioServicio {
     private UsuarioSimpleMapper usuarioSimpleMapper;
 
     @Override
-    public void crearUsuarioDesdeDTO(UsuarioSimpleDTO dto) throws Exception {
+    public void crearUsuarioDesdeDTO(UsuarioSimpleDTO dto) {
         Usuario usuario = usuarioSimpleMapper.toEntity(dto);
         if (usuarioRepo.findByUsuario(usuario.getUsuario()).isPresent()) {
-            throw new Exception("El usuario ya existe");
+            throw new UsuarioYaExisteException("El usuario '" + usuario.getUsuario() + "' ya existe");
         }
         usuarioRepo.save(usuario);
     }
 
     @Override
-    public void actualizarUsuarioDesdeDTO(UsuarioDTO dto) throws Exception {
+    public void actualizarUsuarioDesdeDTO(UsuarioDTO dto) {
         Usuario usuario = usuarioMapper.toEntity(dto);
         if (!usuarioRepo.existsById(usuario.getId())) {
-            throw new Exception("El usuario no existe");
+            throw new UsuarioNoEncontradoException("No se encontró el usuario con ID: " + usuario.getId());
         }
         usuarioRepo.save(usuario);
     }
@@ -59,17 +63,16 @@ public class UsuarioServicioImp implements UsuarioServicio {
         return usuarioRepo.findByUsuario(usuario)
                 .filter(u -> u.getPassword().equals(password))
                 .map(usuarioMapper::toDTO)
-                .orElse(null);
+                .orElseThrow(() -> new CredencialesInvalidasException("Credenciales inválidas para el usuario: " + usuario));
     }
 
     @Override
     public UsuarioSimpleDTO obtenerUltimoUsuarioCreadoDTO() {
         return usuarioRepo.findTopByOrderByIdDesc()
                 .map(usuarioSimpleMapper::toDTO)
-                .orElse(null);
+                .orElseThrow(() -> new UsuarioNoEncontradoException("No hay usuarios registrados"));
     }
 
-    // Métodos internos si necesitas seguir usando entidades
     @Override
     public Usuario buscarPorUsuario(String usuario) {
         return usuarioRepo.findByUsuario(usuario)
@@ -87,7 +90,8 @@ public class UsuarioServicioImp implements UsuarioServicio {
 
     @Override
     public Usuario buscarUsuarioPorId(String usuario) {
-        return usuarioRepo.findByUsuario(usuario).orElse(null);
+        return usuarioRepo.findByUsuario(usuario)
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado: " + usuario));
     }
 
     @Override
@@ -102,13 +106,14 @@ public class UsuarioServicioImp implements UsuarioServicio {
 
     @Override
     public Usuario obtenerUltimoUsuarioCreado() {
-        return usuarioRepo.findTopByOrderByIdDesc().orElse(null);
+        return usuarioRepo.findTopByOrderByIdDesc()
+                .orElseThrow(() -> new UsuarioNoEncontradoException("No hay usuarios registrados"));
     }
 
     @Override
     public Usuario validarCredenciales(String usuario, String password) {
         return usuarioRepo.findByUsuario(usuario)
                 .filter(u -> u.getPassword().equals(password))
-                .orElse(null);
+                .orElseThrow(() -> new CredencialesInvalidasException("Credenciales inválidas para el usuario: " + usuario));
     }
 }
