@@ -3,8 +3,9 @@ package com.example.todotechproject.servicios.UsuarioServicios;
 import com.example.todotechproject.dto.UsuarioDTO.UsuarioDTO;
 import com.example.todotechproject.dto.UsuarioDTO.UsuarioSimpleDTO;
 import com.example.todotechproject.excepciones.UsuarioExcepciones.CredencialesInvalidasException;
+import com.example.todotechproject.excepciones.UsuarioExcepciones.UsuarioNoEncontradoException;
 import com.example.todotechproject.excepciones.UsuarioExcepciones.UsuarioYaExisteException;
-import com.example.todotechproject.excepciones.UsuarioNoEncontradoException;
+
 import com.example.todotechproject.modelo.entidades.Usuario;
 import com.example.todotechproject.modelo.enums.TipoUsuario;
 

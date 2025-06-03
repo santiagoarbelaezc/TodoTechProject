@@ -21,21 +21,56 @@ public class PagoServicioImp implements PagoServicio {
 
     @Override
     public void crearPago(Pago pago) {
-        if (pago.getOrden() == null || pago.getOrden().getId() == null) {
-            throw new IllegalArgumentException("La orden asociada al pago no es válida");
+        // Validación básica de entrada
+        if (pago == null) {
+            throw new IllegalArgumentException("El pago no puede ser nulo");
         }
 
-        // Obtener la orden asociada
-        OrdenVenta orden = ordenVentaRepo.findById(pago.getOrden().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Orden no encontrada"));
+        if (pago.getOrden() == null || pago.getOrden().getId() == null) {
+            throw new IllegalArgumentException("La orden asociada al pago es inválida o está incompleta");
+        }
 
-        // Actualizar el estado a PAGADA
+        if (pago.getMonto() == null || pago.getMonto() <= 0) {
+            throw new IllegalArgumentException("El monto del pago debe ser mayor a cero");
+        }
+
+        if (pago.getMetodoPago() == null) {
+            throw new IllegalArgumentException("Debe especificar el método de pago");
+        }
+
+        // Verificar que la orden existe
+        OrdenVenta orden = ordenVentaRepo.findById(pago.getOrden().getId())
+                .orElseThrow(() -> new IllegalArgumentException("No se encontró una orden con el ID proporcionado"));
+
+        // Verificar si la orden ya ha sido pagada o cancelada
+        if (orden.getEstado() == EstadoOrden.PAGADA) {
+            throw new IllegalStateException("Esta orden ya ha sido pagada");
+        }
+        if (orden.getEstado() == EstadoOrden.CANCELADA) {
+            throw new IllegalStateException("No se puede registrar un pago para una orden cancelada");
+        }
+
+        // Validar que no se haya registrado ya un pago para esta orden
+        boolean yaPagada = pagoRepo.findAll().stream()
+                .anyMatch(p -> p.getOrden().getId().equals(orden.getId()));
+        if (yaPagada) {
+            throw new IllegalStateException("Ya existe un pago registrado para esta orden");
+        }
+
+        // Validar que el monto corresponda al total de la orden
+        if (!pago.getMonto().equals(orden.getTotal())) {
+            throw new IllegalArgumentException("El monto del pago no coincide con el total de la orden (" + orden.getTotal() + ")");
+        }
+
+        // Actualizar el estado de la orden
         orden.setEstado(EstadoOrden.PAGADA);
-        ordenVentaRepo.save(orden); // Guardar cambios
+        ordenVentaRepo.save(orden);
 
         // Guardar el pago
+        pago.setOrden(orden); // Asegurarse de usar la entidad gestionada
         pagoRepo.save(pago);
     }
+
 
 
     @Override
