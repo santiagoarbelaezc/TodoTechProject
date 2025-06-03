@@ -1,6 +1,7 @@
 package com.example.todotechproject.excepciones;
 
 import com.example.todotechproject.excepciones.CajeroExcepciones.*;
+import com.example.todotechproject.excepciones.ProductoExcepciones.CategoriaNoEncontradaException;
 import com.example.todotechproject.excepciones.UsuarioExcepciones.CredencialesInvalidasException;
 import com.example.todotechproject.excepciones.UsuarioExcepciones.UsuarioYaExisteException;
 import com.example.todotechproject.excepciones.VendedorExcepciones.CodigoProductoInvalidoException;
@@ -101,6 +102,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MetodoPagoInvalidoException.class)
     public ResponseEntity<Object> manejarMetodoPagoInvalido(MetodoPagoInvalidoException ex) {
+        return construirRespuesta(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(CategoriaNoEncontradaException.class)
+    public ResponseEntity<Object> manejarCategoriaNoEncontrada(CategoriaNoEncontradaException ex) {
+        return construirRespuesta(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(ProductoNoEncontradoException.class)
+    public ResponseEntity<Object> manejarProductoNoEncontradoException(ProductoNoEncontradoException ex) {
         return construirRespuesta(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 

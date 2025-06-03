@@ -2,6 +2,8 @@ package com.example.todotechproject.servicios.ProductoServicios;
 
 import com.example.todotechproject.dto.ProductoDTO;
 import com.example.todotechproject.dto.ProductoReporteRequest;
+import com.example.todotechproject.excepciones.ProductoExcepciones.CategoriaNoEncontradaException;
+import com.example.todotechproject.excepciones.ProductoExcepciones.ProductoNoEncontradoException;
 import com.example.todotechproject.modelo.entidades.Categoria;
 import com.example.todotechproject.modelo.entidades.DetalleOrden;
 import com.example.todotechproject.modelo.entidades.Producto;
@@ -14,10 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,7 +34,6 @@ public class ProductoServicioImp implements ProductoServicio {
     @Override
     public List<ProductoDTO> obtenerTodos() {
         List<Producto> productos = productoRepo.findAll();
-
         return productos.stream().map(prod -> {
             ProductoDTO dto = new ProductoDTO();
             dto.setId(prod.getId());
@@ -54,7 +52,7 @@ public class ProductoServicioImp implements ProductoServicio {
     public ProductoDTO buscarPorId(Long id) {
         return productoRepo.findById(id)
                 .map(ProductoMapper::toDTO)
-                .orElse(null);
+                .orElseThrow(() -> new ProductoNoEncontradoException("Producto no encontrado con ID: " + id));
     }
 
     @Override
@@ -64,15 +62,12 @@ public class ProductoServicioImp implements ProductoServicio {
                 .collect(Collectors.toList());
     }
 
-
     @Override
     public List<ProductoDTO> buscarPorCategoria(String categoria) {
         return productoRepo.findByCategoriaNombre(categoria).stream()
                 .map(ProductoMapper::toDTO)
                 .collect(Collectors.toList());
     }
-
-    //OBTENER PRODUCTOS POR NOMBRE
 
     @Override
     public List<ProductoDTO> obtenerProductosAsus() {
@@ -97,7 +92,7 @@ public class ProductoServicioImp implements ProductoServicio {
     @Override
     public void eliminarProducto(Long id) {
         if (!productoRepo.existsById(id)) {
-            throw new IllegalArgumentException("Producto no encontrado con ID: " + id);
+            throw new ProductoNoEncontradoException("Producto no encontrado con ID: " + id);
         }
         productoRepo.deleteById(id);
     }
@@ -112,10 +107,9 @@ public class ProductoServicioImp implements ProductoServicio {
         producto.setStock(productoDTO.getStock());
         producto.setImagen(productoDTO.getImagen());
 
-        // Suponiendo que el campo `categoria` del DTO es el nombre de la categoría
         Categoria categoria = categoriaRepo.findCategoriaByNombre(productoDTO.getCategoria());
         if (categoria == null) {
-            throw new IllegalArgumentException("Categoría no encontrada: " + productoDTO.getCategoria());
+            throw new CategoriaNoEncontradaException("Categoría no encontrada: " + productoDTO.getCategoria());
         }
         producto.setCategoria(categoria);
 
@@ -148,13 +142,12 @@ public class ProductoServicioImp implements ProductoServicio {
         return new ArrayList<>(reporteMap.values());
     }
 
-
     @Override
     public ResponseEntity<?> consultarDisponibilidad(String codigo) {
         try {
             int stock = productoRepo.findByCodigo(codigo)
                     .map(Producto::getStock)
-                    .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con código: " + codigo));
+                    .orElseThrow(() -> new ProductoNoEncontradoException("Producto no encontrado con código: " + codigo));
 
             Map<String, Object> response = new HashMap<>();
             response.put("codigo", codigo);
@@ -162,7 +155,7 @@ public class ProductoServicioImp implements ProductoServicio {
             response.put("disponible", stock > 0);
 
             return ResponseEntity.ok(response);
-        } catch (IllegalArgumentException e) {
+        } catch (ProductoNoEncontradoException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -175,9 +168,11 @@ public class ProductoServicioImp implements ProductoServicio {
         try {
             int stock = productoRepo.findByCodigo(codigo)
                     .map(Producto::getStock)
-                    .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con código: " + codigo));
+                    .orElseThrow(() -> new ProductoNoEncontradoException("Producto no encontrado con código: " + codigo));
 
             return ResponseEntity.ok(Map.of("codigo", codigo, "disponible", stock > 0));
+        } catch (ProductoNoEncontradoException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error al verificar disponibilidad: " + e.getMessage()));
@@ -187,10 +182,10 @@ public class ProductoServicioImp implements ProductoServicio {
     @Override
     public ResponseEntity<?> crearProductoResponse(ProductoDTO productoDTO) {
         try {
-            crearProducto(productoDTO); // Usa el método ya existente
+            crearProducto(productoDTO);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(Map.of("mensaje", "Producto creado con éxito"));
-        } catch (IllegalArgumentException e) {
+        } catch (CategoriaNoEncontradaException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -201,16 +196,13 @@ public class ProductoServicioImp implements ProductoServicio {
     @Override
     public ResponseEntity<?> eliminarProductoResponse(Long id) {
         try {
-            eliminarProducto(id); // Usa el método ya existente
+            eliminarProducto(id);
             return ResponseEntity.ok(Map.of("mensaje", "Producto eliminado con éxito"));
-        } catch (IllegalArgumentException e) {
+        } catch (ProductoNoEncontradoException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error al eliminar el producto: " + e.getMessage()));
         }
     }
-
-
-
 }
