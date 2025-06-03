@@ -1,5 +1,6 @@
 package com.example.todotechproject.excepciones;
 
+import com.example.todotechproject.excepciones.CajeroExcepciones.*;
 import com.example.todotechproject.excepciones.UsuarioExcepciones.CredencialesInvalidasException;
 import com.example.todotechproject.excepciones.UsuarioExcepciones.UsuarioYaExisteException;
 import com.example.todotechproject.excepciones.VendedorExcepciones.CodigoProductoInvalidoException;
@@ -63,6 +64,45 @@ public class GlobalExceptionHandler {
         return construirRespuesta(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno del servidor: " + ex.getMessage());
     }
 
+    @ExceptionHandler(CajeroNoEncontradoException.class)
+    public ResponseEntity<Object> manejarCajeroNoEncontrado(CajeroNoEncontradoException ex) {
+        return construirRespuesta(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ExceptionHandler(OrdenNoEncontradaException.class)
+    public ResponseEntity<Object> manejarOrdenNoEncontrada(OrdenNoEncontradaException ex) {
+        return construirRespuesta(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ExceptionHandler(OrdenYaPagadaException.class)
+    public ResponseEntity<Object> manejarOrdenYaPagada(OrdenYaPagadaException ex) {
+        return construirRespuesta(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(MetodoPagoNoSoportadoException.class)
+    public ResponseEntity<Object> manejarMetodoPagoNoSoportado(MetodoPagoNoSoportadoException ex) {
+        return construirRespuesta(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(OrdenNoPagadaException.class)
+    public ResponseEntity<Object> manejarOrdenNoPagada(OrdenNoPagadaException ex) {
+        return construirRespuesta(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(EstadoOrdenInvalidoException.class)
+    public ResponseEntity<Object> manejarEstadoOrdenInvalido(EstadoOrdenInvalidoException ex) {
+        return construirRespuesta(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(ClienteIdInvalidoException.class)
+    public ResponseEntity<Object> manejarClienteIdInvalido(ClienteIdInvalidoException ex) {
+        return construirRespuesta(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(MetodoPagoInvalidoException.class)
+    public ResponseEntity<Object> manejarMetodoPagoInvalido(MetodoPagoInvalidoException ex) {
+        return construirRespuesta(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
 
 
     private ResponseEntity<Object> construirRespuesta(HttpStatus estado, String mensaje) {
@@ -73,6 +113,10 @@ public class GlobalExceptionHandler {
         cuerpo.put("mensaje", mensaje);
         return new ResponseEntity<>(cuerpo, estado);
     }
+
+
+
+
 
 
 
